@@ -1,18 +1,13 @@
-package domainapp.modules.simple.types;
+package domainapp.modules.simple.dom.partido.types;
+
+import org.apache.causeway.applib.annotation.*;
+
+import javax.jdo.annotations.Column;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import javax.jdo.annotations.Column;
-
-import org.apache.causeway.applib.annotation.Editing;
-import org.apache.causeway.applib.annotation.Parameter;
-import org.apache.causeway.applib.annotation.ParameterLayout;
-import org.apache.causeway.applib.annotation.Property;
-import org.apache.causeway.applib.annotation.PropertyLayout;
-import org.apache.causeway.applib.annotation.Where;
 
 @Column(length = Notes.MAX_LEN, allowsNull = "true")
 @Property(editing = Editing.ENABLED, maxLength = Notes.MAX_LEN)

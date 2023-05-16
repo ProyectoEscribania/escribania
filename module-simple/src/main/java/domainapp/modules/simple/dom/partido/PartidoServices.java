@@ -1,4 +1,4 @@
-package domainapp.modules.simple.dom.so;
+package domainapp.modules.simple.dom.partido;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ import domainapp.modules.simple.dom.so.types.Name;
 @DomainService(nature = NatureOfService.VIEW)
 @Priority(PriorityPrecedence.EARLY)
 @RequiredArgsConstructor(onConstructor_ = {@Inject} )
-public class SimpleObjects {
+public class PartidoServices {
 
     final RepositoryService repositoryService;
     final JdoSupportService jdoSupportService;
@@ -36,26 +36,26 @@ public class SimpleObjects {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public SimpleObject create(
+    public Partido create(
             @Name final String name) {
-        return repositoryService.persist(SimpleObject.withName(name));
+        return repositoryService.persist(Partido.withName(name));
     }
 
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT, promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<SimpleObject> findByName(
+    public List<Partido> findByName(
             @Name final String name
             ) {
         return repositoryService.allMatches(
-                    Query.named(SimpleObject.class, SimpleObject.NAMED_QUERY__FIND_BY_NAME_LIKE)
+                    Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_LIKE)
                         .withParameter("name", name));
     }
 
 
-    public SimpleObject findByNameExact(final String name) {
+    public Partido findByNameExact(final String name) {
         return repositoryService.firstMatch(
-                    Query.named(SimpleObject.class, SimpleObject.NAMED_QUERY__FIND_BY_NAME_EXACT)
+                    Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
                         .withParameter("name", name))
                 .orElse(null);
     }
@@ -64,14 +64,14 @@ public class SimpleObjects {
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-    public List<SimpleObject> listAll() {
-        return repositoryService.allInstances(SimpleObject.class);
+    public List<Partido> listAll() {
+        return repositoryService.allInstances(Partido.class);
     }
 
 
 
     public void ping() {
-        JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
+        JDOQLTypedQuery<Partido> q = jdoSupportService.newTypesafeQuery(Partido.class);
         final QSimpleObject candidate = QSimpleObject.candidate();
         q.range(0,2);
         q.orderBy(candidate.name.asc());

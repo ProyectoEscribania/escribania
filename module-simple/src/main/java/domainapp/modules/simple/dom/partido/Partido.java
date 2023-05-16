@@ -1,4 +1,4 @@
-package domainapp.modules.simple.dom.so;
+package domainapp.modules.simple.dom.partido;
 
 import java.time.LocalTime;
 import java.time.ZoneOffset;
@@ -68,13 +68,13 @@ import domainapp.modules.simple.dom.so.types.Notes;
 )
 @Queries({
         @Query(
-                name = SimpleObject.NAMED_QUERY__FIND_BY_NAME_LIKE,
+                name = Partido.NAMED_QUERY__FIND_BY_NAME_LIKE,
                 value = "SELECT " +
                         "FROM domainapp.modules.simple.dom.so.SimpleObject " +
                         "WHERE name.indexOf(:name) >= 0"
         ),
         @Query(
-                name = SimpleObject.NAMED_QUERY__FIND_BY_NAME_EXACT,
+                name = Partido.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
                         "FROM domainapp.modules.simple.dom.so.SimpleObject " +
                         "WHERE name == :name"
@@ -88,13 +88,13 @@ import domainapp.modules.simple.dom.so.types.Notes;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @XmlJavaTypeAdapter(PersistentEntityAdapter.class)
 @ToString(onlyExplicitlyIncluded = true)
-public class SimpleObject implements Comparable<SimpleObject>, CalendarEventable {
+public class Partido implements Comparable<Partido>, CalendarEventable {
 
     static final String NAMED_QUERY__FIND_BY_NAME_LIKE = "SimpleObject.findByNameLike";
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "SimpleObject.findByNameExact";
 
-    public static SimpleObject withName(final String name) {
-        val simpleObject = new SimpleObject();
+    public static Partido withName(final String name) {
+        val simpleObject = new Partido();
         simpleObject.setName(name);
         return simpleObject;
     }
@@ -159,7 +159,7 @@ public class SimpleObject implements Comparable<SimpleObject>, CalendarEventable
     @ActionLayout(
             associateWith = "name", promptStyle = PromptStyle.INLINE,
             describedAs = "Updates the name of this object, certain characters (" + PROHIBITED_CHARACTERS + ") are not allowed.")
-    public SimpleObject updateName(
+    public Partido updateName(
             @Name final String name) {
         setName(name);
         return this;
@@ -181,7 +181,7 @@ public class SimpleObject implements Comparable<SimpleObject>, CalendarEventable
 
     @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
     @ActionLayout(associateWith = "attachment", position = ActionLayout.Position.PANEL)
-    public SimpleObject updateAttachment(
+    public Partido updateAttachment(
             @Nullable final Blob attachment) {
         setAttachment(attachment);
         return this;
@@ -205,11 +205,11 @@ public class SimpleObject implements Comparable<SimpleObject>, CalendarEventable
 
 
 
-    private final static Comparator<SimpleObject> comparator =
-            Comparator.comparing(SimpleObject::getName);
+    private final static Comparator<Partido> comparator =
+            Comparator.comparing(Partido::getName);
 
     @Override
-    public int compareTo(final SimpleObject other) {
+    public int compareTo(final Partido other) {
         return comparator.compare(this, other);
     }
 

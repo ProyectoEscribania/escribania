@@ -1,9 +1,13 @@
 package domainapp.modules.simple.dom.partido;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Comparator;
+import java.util.Date;
 
+import javax.ejb.Local;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.Column;
@@ -19,6 +23,13 @@ import javax.jdo.annotations.Unique;
 import javax.jdo.annotations.Version;
 import javax.jdo.annotations.VersionStrategy;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import domainapp.modules.simple.dom.partido.types.Estados;
+import domainapp.modules.simple.dom.partido.types.Horario;
+
+import domainapp.modules.simple.dom.partido.types.NumeroCancha;
+
+import domainapp.modules.simple.dom.partido.types.Precio;
 
 import org.springframework.lang.Nullable;
 
@@ -64,38 +75,38 @@ import domainapp.modules.simple.dom.so.types.Notes;
     schema = SimpleModule.SCHEMA,
     identityType=IdentityType.DATASTORE)
 @Unique(
-        name = "SimpleObject__name__UNQ", members = { "name" }
+        name = "Partido__name__UNQ", members = { "horario" }
 )
 @Queries({
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_NAME_LIKE,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.so.SimpleObject " +
-                        "WHERE name.indexOf(:name) >= 0"
+                        "FROM domainapp.modules.simple.dom.so.Partido " +
+                        "WHERE horario.indexOf(:horario) >= 0"
         ),
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.so.SimpleObject " +
-                        "WHERE name == :name"
+                        "FROM domainapp.modules.simple.dom.so.Partido " +
+                        "WHERE horario == :horario"
         )
 })
 @DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
 @Version(strategy= VersionStrategy.DATE_TIME, column="version")
-@Named(SimpleModule.NAMESPACE + ".SimpleObject")
+@Named(SimpleModule.NAMESPACE + ".Partido")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
 @DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @XmlJavaTypeAdapter(PersistentEntityAdapter.class)
 @ToString(onlyExplicitlyIncluded = true)
-public class Partido implements Comparable<Partido>, CalendarEventable {
+public class Partido implements Comparable<Partido> {
 
-    static final String NAMED_QUERY__FIND_BY_NAME_LIKE = "SimpleObject.findByNameLike";
-    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "SimpleObject.findByNameExact";
+    static final String NAMED_QUERY__FIND_BY_NAME_LIKE = "Partido.findByNameLike";
+    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
 
-    public static Partido withName(final String name) {
+    public static Partido withName(final LocalDate horario) {
         val simpleObject = new Partido();
-        simpleObject.setName(name);
+        simpleObject.setHorario(horario);
         return simpleObject;
     }
 
@@ -105,17 +116,31 @@ public class Partido implements Comparable<Partido>, CalendarEventable {
 
 
 
+
     @Title
-    @Name
+    @Horario
     @Getter @Setter @ToString.Include
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.IDENTITY, sequence = "1")
-    private String name;
+    private LocalDate horario;
 
-    @Notes
+
+
+    @NumeroCancha
     @Getter @Setter
-    @Property(commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
-    private String notes;
+    private int numeroCancha;
+
+    @Precio
+    @Getter @Setter
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
+    private BigDecimal precio;
+
+    @Getter @Setter
+   // @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
+    private Estados estados;
+
+
+
 
 
     @PdfJsViewer
@@ -131,12 +156,14 @@ public class Partido implements Comparable<Partido>, CalendarEventable {
 
 
 
-
+/*
     @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     @Column(allowsNull = "true")
     @Getter @Setter
     private java.time.LocalDate lastCheckedIn;
+
+
 
 
     @Override
@@ -155,26 +182,7 @@ public class Partido implements Comparable<Partido>, CalendarEventable {
     }
 
 
-    @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
-    @ActionLayout(
-            associateWith = "name", promptStyle = PromptStyle.INLINE,
-            describedAs = "Updates the name of this object, certain characters (" + PROHIBITED_CHARACTERS + ") are not allowed.")
-    public Partido updateName(
-            @Name final String name) {
-        setName(name);
-        return this;
-    }
-    @MemberSupport public String default0UpdateName() {
-        return getName();
-    }
-    @MemberSupport public String validate0UpdateName(final String newName) {
-        for (char prohibitedCharacter : PROHIBITED_CHARACTERS.toCharArray()) {
-            if( newName.contains(""+prohibitedCharacter)) {
-                return "Character '" + prohibitedCharacter + "' is not allowed.";
-            }
-        }
-        return null;
-    }
+
     static final String PROHIBITED_CHARACTERS = "&%$!";
 
 
@@ -203,10 +211,10 @@ public class Partido implements Comparable<Partido>, CalendarEventable {
         repositoryService.removeAndFlush(this);
     }
 
-
+*/
 
     private final static Comparator<Partido> comparator =
-            Comparator.comparing(Partido::getName);
+            Comparator.comparing(Partido::getHorario);
 
     @Override
     public int compareTo(final Partido other) {

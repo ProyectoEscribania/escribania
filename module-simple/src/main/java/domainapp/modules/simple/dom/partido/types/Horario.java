@@ -11,13 +11,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Column(length = Name.MAX_LEN, allowsNull = "false")
-@Property(maxLength = Name.MAX_LEN)
-@Parameter(maxLength = Name.MAX_LEN)
-@ParameterLayout(named = "Name")
+@Column(length = Horario.MAX_LEN, allowsNull = "false")
+@Property(maxLength = Horario.MAX_LEN)
+@Parameter(maxLength = Horario.MAX_LEN)
+@ParameterLayout(named = "Horario")
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Name {
+public @interface Horario {
 
     int MAX_LEN = 40;
 }

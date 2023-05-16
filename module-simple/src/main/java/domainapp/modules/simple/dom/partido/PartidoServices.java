@@ -1,11 +1,14 @@
 package domainapp.modules.simple.dom.partido;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
+
+import domainapp.modules.simple.dom.partido.types.Horario;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -37,19 +40,19 @@ public class PartidoServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Partido create(
-            @Name final String name) {
-        return repositoryService.persist(Partido.withName(name));
+            @Horario final LocalDate horario) {
+        return repositoryService.persist(Partido.withName(horario));
     }
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT, promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Partido> findByName(
-            @Name final String name
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    public List<Partido> findByHorario(
+            @Horario final LocalDate horario
             ) {
         return repositoryService.allMatches(
                     Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_LIKE)
-                        .withParameter("name", name));
+                        .withParameter("horario", horario));
     }
 
 
@@ -63,7 +66,7 @@ public class PartidoServices {
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+    @ActionLayout(associateWith = )
     public List<Partido> listAll() {
         return repositoryService.allInstances(Partido.class);
     }
@@ -72,9 +75,9 @@ public class PartidoServices {
 
     public void ping() {
         JDOQLTypedQuery<Partido> q = jdoSupportService.newTypesafeQuery(Partido.class);
-        final QSimpleObject candidate = QSimpleObject.candidate();
+        final QPartido candidate = QPartido.candidate();
         q.range(0,2);
-        q.orderBy(candidate.name.asc());
+        q.orderBy(candidate.horario.asc());
         q.executeList();
     }
 

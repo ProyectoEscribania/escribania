@@ -1,5 +1,7 @@
 package domainapp.modules.simple;
 
+import domainapp.modules.simple.dom.partido.Partido;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -32,7 +34,7 @@ public class SimpleModule implements ModuleWithFixtures {
         return new TeardownFixtureJdoAbstract() {
             @Override
             protected void execute(ExecutionContext executionContext) {
-                deleteFrom(SimpleObject.class);
+                deleteFrom(Partido.class);
             }
         };
     }

@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import domainapp.modules.simple.dom.partido.types.Estados;
 
+import domainapp.modules.simple.dom.partido.types.NumeroCancha;
+
 import org.springframework.lang.Nullable;
 
 import org.apache.causeway.applib.annotation.Action;
@@ -85,9 +87,11 @@ public class Partido implements Comparable<Partido> {
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
 
-    public static Partido withName(final LocalDate horario) {
+    public static Partido withName(final LocalDate horario, final NumeroCancha numeroCancha, final BigDecimal precio) {
         val simpleObject = new Partido();
         simpleObject.setHorario(horario);
+        simpleObject.setPrecio(precio);
+        simpleObject.setNumeroCancha(numeroCancha);
         return simpleObject;
     }
 
@@ -107,7 +111,7 @@ public class Partido implements Comparable<Partido> {
 
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
-    private int numeroCancha;
+    private NumeroCancha numeroCancha;
 
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")

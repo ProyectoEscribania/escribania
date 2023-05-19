@@ -2,6 +2,7 @@ package domainapp.modules.simple.dom.partido.fixture;
 
 import domainapp.modules.simple.dom.partido.Partido;
 import domainapp.modules.simple.dom.partido.PartidoServices;
+import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 import domainapp.modules.simple.dom.so.SimpleObject;
 import domainapp.modules.simple.dom.so.SimpleObjects;
 
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RequiredArgsConstructor
@@ -29,7 +31,8 @@ public enum Partido_persona
 implements Persona<Partido, Partido_persona.Builder> {;
 
 
-
+    private final NumeroCancha numeroCancha;
+    private final BigDecimal precio;
     private final LocalDate horario;
     private final String contentFileName;
 
@@ -51,7 +54,7 @@ implements Persona<Partido, Partido_persona.Builder> {;
         @Override
         protected Partido buildResult(final ExecutionContext ec) {
 
-            val simpleObject = wrap(partidoServices).crearPartido(persona.horario);
+            val simpleObject = wrap(partidoServices).crearPartido(persona.horario,persona.precio,persona.numeroCancha);
 
             if (persona.contentFileName != null) {
                 val bytes = toBytes(persona.contentFileName);

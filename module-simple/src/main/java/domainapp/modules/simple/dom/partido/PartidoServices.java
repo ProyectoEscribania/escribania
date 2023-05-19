@@ -1,5 +1,6 @@
 package domainapp.modules.simple.dom.partido;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
+import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 import domainapp.modules.simple.dom.so.SimpleObject;
 
 import org.apache.causeway.applib.annotation.Action;
@@ -38,8 +40,8 @@ public class PartidoServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Partido crearPartido(
-            final LocalDate horario) {
-        return repositoryService.persist(Partido.withName(horario));
+            final LocalDate horario, final BigDecimal precio, final NumeroCancha numeroCancha) {
+        return repositoryService.persist(Partido.withName(horario,numeroCancha,precio));
     }
 
 

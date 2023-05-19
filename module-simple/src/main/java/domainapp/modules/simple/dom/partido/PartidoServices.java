@@ -2,19 +2,16 @@ package domainapp.modules.simple.dom.partido;
 
 import java.time.LocalDate;
 import java.util.List;
-import domainapp.modules.simple.dom.partido.*;
+
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
-import domainapp.modules.simple.dom.partido.types.Horario;
-
 import domainapp.modules.simple.dom.so.SimpleObject;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
-import org.apache.causeway.applib.annotation.BookmarkPolicy;
 import org.apache.causeway.applib.annotation.DomainService;
 import org.apache.causeway.applib.annotation.NatureOfService;
 import org.apache.causeway.applib.annotation.PriorityPrecedence;
@@ -27,7 +24,6 @@ import org.apache.causeway.persistence.jdo.applib.services.JdoSupportService;
 import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
-import domainapp.modules.simple.dom.so.types.Name;
 
 @Named(SimpleModule.NAMESPACE + ".PartidoServices")
 @DomainService(nature = NatureOfService.VIEW)
@@ -42,23 +38,15 @@ public class PartidoServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Partido crearPartido(
-            @Horario final LocalDate horario) {
+            final LocalDate horario) {
         return repositoryService.persist(Partido.withName(horario));
     }
 
 
-    @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Partido> findByHorario(
-            @Horario final LocalDate horario
-            ) {
-        return repositoryService.allMatches(
-                    Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_LIKE)
-                        .withParameter("horario", horario));
-    }
 
 
-    public Partido findByNameExact(final LocalDate horario) {
+
+    public Partido buscarPartido(final LocalDate horario) {
         return repositoryService.firstMatch(
                     Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
                         .withParameter("horario", horario))
@@ -69,7 +57,7 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Partido> listAll() {
+    public List<Partido> verPartidos() {
         return repositoryService.allInstances(Partido.class);
     }
 

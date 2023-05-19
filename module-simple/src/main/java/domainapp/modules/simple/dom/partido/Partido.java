@@ -2,12 +2,8 @@ package domainapp.modules.simple.dom.partido;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.Comparator;
-import java.util.Date;
 
-import javax.ejb.Local;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.Column;
@@ -25,11 +21,6 @@ import javax.jdo.annotations.VersionStrategy;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import domainapp.modules.simple.dom.partido.types.Estados;
-import domainapp.modules.simple.dom.partido.types.Horario;
-
-import domainapp.modules.simple.dom.partido.types.NumeroCancha;
-
-import domainapp.modules.simple.dom.partido.types.Precio;
 
 import org.springframework.lang.Nullable;
 
@@ -40,7 +31,6 @@ import org.apache.causeway.applib.annotation.DomainObjectLayout;
 import org.apache.causeway.applib.annotation.Editing;
 import org.apache.causeway.applib.annotation.MemberSupport;
 import org.apache.causeway.applib.annotation.Optionality;
-import org.apache.causeway.applib.annotation.PromptStyle;
 import org.apache.causeway.applib.annotation.Property;
 import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
@@ -52,8 +42,6 @@ import org.apache.causeway.applib.services.message.MessageService;
 import org.apache.causeway.applib.services.repository.RepositoryService;
 import org.apache.causeway.applib.services.title.TitleService;
 import org.apache.causeway.applib.value.Blob;
-import org.apache.causeway.extensions.fullcalendar.applib.CalendarEventable;
-import org.apache.causeway.extensions.fullcalendar.applib.value.CalendarEvent;
 import org.apache.causeway.extensions.pdfjs.applib.annotations.PdfJsViewer;
 
 import static org.apache.causeway.applib.annotation.SemanticsOf.IDEMPOTENT;
@@ -67,23 +55,16 @@ import lombok.ToString;
 import lombok.val;
 
 import domainapp.modules.simple.SimpleModule;
-import domainapp.modules.simple.dom.so.types.Name;
-import domainapp.modules.simple.dom.so.types.Notes;
 
 
 @PersistenceCapable(
-    schema = SimpleModule.SCHEMA,
-    identityType=IdentityType.DATASTORE)
+        schema = SimpleModule.SCHEMA,
+        identityType=IdentityType.DATASTORE)
 @Unique(
         name = "Partido__name__UNQ", members = { "horario" }
 )
 @Queries({
-        @Query(
-                name = Partido.NAMED_QUERY__FIND_BY_NAME_LIKE,
-                value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.so.Partido " +
-                        "WHERE horario.indexOf(:horario) >= 0"
-        ),
+
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
@@ -101,7 +82,7 @@ import domainapp.modules.simple.dom.so.types.Notes;
 @ToString(onlyExplicitlyIncluded = true)
 public class Partido implements Comparable<Partido> {
 
-    static final String NAMED_QUERY__FIND_BY_NAME_LIKE = "Partido.findByNameLike";
+
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
 
     public static Partido withName(final LocalDate horario) {
@@ -118,19 +99,16 @@ public class Partido implements Comparable<Partido> {
 
 
     @Title
-    @Horario
     @Getter @Setter @ToString.Include
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.IDENTITY, sequence = "1")
     private LocalDate horario;
 
 
 
-    @NumeroCancha
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
     private int numeroCancha;
 
-    @Precio
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     private BigDecimal precio;

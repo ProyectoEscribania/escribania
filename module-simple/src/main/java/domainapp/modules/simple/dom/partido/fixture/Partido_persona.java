@@ -40,7 +40,7 @@ implements Persona<Partido, Partido_persona.Builder> {;
 
     @Override
     public Partido findUsing(final ServiceRegistry serviceRegistry) {
-        return serviceRegistry.lookupService(PartidoServices.class).map(x -> x.findByNameExact(horario)).orElseThrow();
+        return serviceRegistry.lookupService(PartidoServices.class).map(x -> x.buscarPartido(horario)).orElseThrow();
     }
 
     @Accessors(chain = true)

@@ -61,8 +61,8 @@ import domainapp.modules.simple.dom.so.types.Notes;
 
 
 @PersistenceCapable(
-    schema = SimpleModule.SCHEMA,
-    identityType=IdentityType.DATASTORE)
+        schema = SimpleModule.SCHEMA,
+        identityType=IdentityType.DATASTORE)
 @Unique(
         name = "SimpleObject__name__UNQ", members = { "name" }
 )

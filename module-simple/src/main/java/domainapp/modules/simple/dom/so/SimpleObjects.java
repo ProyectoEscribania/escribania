@@ -43,7 +43,7 @@ public class SimpleObjects {
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT, promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<SimpleObject> findByName(
             @Name final String name
             ) {
@@ -63,12 +63,10 @@ public class SimpleObjects {
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<SimpleObject> listAll() {
         return repositoryService.allInstances(SimpleObject.class);
     }
-
-
 
     public void ping() {
         JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
@@ -77,5 +75,7 @@ public class SimpleObjects {
         q.orderBy(candidate.name.asc());
         q.executeList();
     }
+
+
 
 }

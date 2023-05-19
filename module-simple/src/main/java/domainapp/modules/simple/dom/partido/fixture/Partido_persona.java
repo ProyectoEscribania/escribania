@@ -22,23 +22,15 @@ import javax.inject.Inject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.time.LocalDate;
 
 @RequiredArgsConstructor
 public enum Partido_persona
-implements Persona<Partido, Partido_persona.Builder> {
+implements Persona<Partido, Partido_persona.Builder> {;
 
-    FOO("Foo", "Foo.pdf"),
-    BAR("Bar", "Bar.pdf"),
-    BAZ("Baz", null),
-    FRODO("Frodo", "Frodo.pdf"),
-    FROYO("Froyo", null),
-    FIZZ("Fizz", "Fizz.pdf"),
-    BIP("Bip", null),
-    BOP("Bop", null),
-    BANG("Bang", "Bang.pdf"),
-    BOO("Boo", null);
 
-    private final String name;
+
+    private final LocalDate horario;
     private final String contentFileName;
 
     @Override
@@ -48,18 +40,18 @@ implements Persona<Partido, Partido_persona.Builder> {
 
     @Override
     public Partido findUsing(final ServiceRegistry serviceRegistry) {
-        return serviceRegistry.lookupService(PartidoServices.class).map(x -> x.findByNameExact(name)).orElseThrow();
+        return serviceRegistry.lookupService(PartidoServices.class).map(x -> x.findByNameExact(horario)).orElseThrow();
     }
 
     @Accessors(chain = true)
-    public static class Builder extends BuilderScriptWithResult<SimpleObject> {
+    public static class Builder extends BuilderScriptWithResult<Partido> {
 
         @Getter @Setter private Partido_persona persona;
 
         @Override
-        protected SimpleObject buildResult(final ExecutionContext ec) {
+        protected Partido buildResult(final ExecutionContext ec) {
 
-            val simpleObject = wrap(simpleObjects).create(persona.name);
+            val simpleObject = wrap(partidoServices).crearPartido(persona.horario);
 
             if (persona.contentFileName != null) {
                 val bytes = toBytes(persona.contentFileName);
@@ -89,13 +81,13 @@ implements Persona<Partido, Partido_persona.Builder> {
 
         // -- DEPENDENCIES
 
-        @Inject SimpleObjects simpleObjects;
+        @Inject PartidoServices partidoServices;
         @Inject ClockService clockService;
         @Inject FakeDataService fakeDataService;
     }
 
     public static class PersistAll
-            extends PersonaEnumPersistAll<SimpleObject, Partido_persona, Builder> {
+            extends PersonaEnumPersistAll<Partido, Partido_persona, Builder> {
         public PersistAll() {
             super(Partido_persona.class);
         }

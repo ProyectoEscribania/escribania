@@ -2,13 +2,15 @@ package domainapp.modules.simple.dom.partido;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import domainapp.modules.simple.dom.partido.*;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
 import domainapp.modules.simple.dom.partido.types.Horario;
+
+import domainapp.modules.simple.dom.so.SimpleObject;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -27,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 import domainapp.modules.simple.SimpleModule;
 import domainapp.modules.simple.dom.so.types.Name;
 
-@Named(SimpleModule.NAMESPACE + ".SimpleObjects")
+@Named(SimpleModule.NAMESPACE + ".PartidoServices")
 @DomainService(nature = NatureOfService.VIEW)
 @Priority(PriorityPrecedence.EARLY)
 @RequiredArgsConstructor(onConstructor_ = {@Inject} )
@@ -39,7 +41,7 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Partido create(
+    public Partido crearPartido(
             @Horario final LocalDate horario) {
         return repositoryService.persist(Partido.withName(horario));
     }
@@ -56,29 +58,28 @@ public class PartidoServices {
     }
 
 
-    public Partido findByNameExact(final String name) {
+    public Partido findByNameExact(final LocalDate horario) {
         return repositoryService.firstMatch(
                     Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
-                        .withParameter("name", name))
+                        .withParameter("horario", horario))
                 .orElse(null);
     }
 
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(associateWith = )
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<Partido> listAll() {
         return repositoryService.allInstances(Partido.class);
     }
 
-
-
     public void ping() {
-        JDOQLTypedQuery<Partido> q = jdoSupportService.newTypesafeQuery(Partido.class);
+        JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
         final QPartido candidate = QPartido.candidate();
-        q.range(0,2);
+        q.range(0, 2);
         q.orderBy(candidate.horario.asc());
         q.executeList();
+
     }
 
 }

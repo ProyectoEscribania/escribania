@@ -156,7 +156,7 @@ public class Partido implements Comparable<Partido> {
 
 
 
-/*
+
     @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     @Column(allowsNull = "true")
@@ -166,20 +166,8 @@ public class Partido implements Comparable<Partido> {
 
 
 
-    @Override
-    public String getCalendarName() {
-        return "Last checked-in";
-    }
 
-    @Override
-    public CalendarEvent toCalendarEvent() {
-        if (getLastCheckedIn() != null) {
-            long epochMillis = getLastCheckedIn().toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.systemDefault().getRules().getOffset(getLastCheckedIn().atStartOfDay())) * 1000L;
-            return new CalendarEvent(epochMillis, getCalendarName(), titleService.titleOf(this), getNotes());
-        } else {
-            return null;
-        }
-    }
+
 
 
 
@@ -211,7 +199,7 @@ public class Partido implements Comparable<Partido> {
         repositoryService.removeAndFlush(this);
     }
 
-*/
+
 
     private final static Comparator<Partido> comparator =
             Comparator.comparing(Partido::getHorario);

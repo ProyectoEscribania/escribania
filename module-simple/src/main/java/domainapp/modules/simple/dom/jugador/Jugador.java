@@ -1,7 +1,5 @@
-package domainapp.modules.simple.dom.partido;
+package domainapp.modules.simple.dom.jugador;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Comparator;
 
 import javax.inject.Inject;
@@ -20,10 +18,7 @@ import javax.jdo.annotations.Version;
 import javax.jdo.annotations.VersionStrategy;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import domainapp.modules.simple.dom.partido.types.Estados;
-
-import domainapp.modules.simple.dom.partido.types.Horarios;
-import domainapp.modules.simple.dom.partido.types.NumeroCancha;
+import org.apache.causeway.applib.annotation.Title;
 
 import org.springframework.lang.Nullable;
 
@@ -38,7 +33,6 @@ import org.apache.causeway.applib.annotation.Property;
 import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
 import org.apache.causeway.applib.annotation.TableDecorator;
-import org.apache.causeway.applib.annotation.Title;
 import org.apache.causeway.applib.jaxb.PersistentEntityAdapter;
 import org.apache.causeway.applib.layout.LayoutConstants;
 import org.apache.causeway.applib.services.message.MessageService;
@@ -64,37 +58,37 @@ import domainapp.modules.simple.SimpleModule;
         schema = SimpleModule.SCHEMA,
         identityType=IdentityType.DATASTORE)
 @Unique(
-        name = "Partido__name__UNQ", members = { "horario" }
+        name = "Partido__name__UNQ", members = { "telefono" }
 )
 @Queries({
 
         @Query(
-                name = Partido.NAMED_QUERY__FIND_BY_NAME_EXACT,
+                name = Jugador.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido " +
-                        "WHERE horario == :horario"
+                        "FROM domainapp.modules.simple.dom.jugador.Jugador " +
+                        "WHERE telefono == :telefono"
         )
 })
 @DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
 @Version(strategy= VersionStrategy.DATE_TIME, column="version")
-@Named(SimpleModule.NAMESPACE + ".Partido")
+@Named(SimpleModule.NAMESPACE + ".Jugador")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
 @DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @XmlJavaTypeAdapter(PersistentEntityAdapter.class)
 @ToString(onlyExplicitlyIncluded = true)
-public class Partido implements Comparable<Partido> {
+public class Jugador implements Comparable<Jugador> {
 
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
 
-    public static Partido withName(final Horarios horario,final LocalDate dia, final NumeroCancha numeroCancha, final BigDecimal precio) {
-        val partido = new Partido();
-        partido.setDia(dia);
-        partido.setHorario(horario);
-        partido.setPrecio(precio);
-        partido.setNumeroCancha(numeroCancha);
-        return partido;
+    public static Jugador withName(final String nombre,final String apellido,final String telefono,final String mail) {
+        val jugador = new Jugador();
+        jugador.setNombre(nombre);
+        jugador.setApellido(apellido);
+        jugador.setTelefono(telefono);
+        jugador.setMail(mail);
+        return jugador;
     }
 
     @Inject @NotPersistent RepositoryService repositoryService;
@@ -106,23 +100,22 @@ public class Partido implements Comparable<Partido> {
     @Title
     @Getter @Setter @ToString.Include
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.IDENTITY, sequence = "1")
-    private LocalDate dia;
+    private String nombre;
 
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
-    private Horarios horario;
+    private String apellido;
+
 
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
-    private NumeroCancha numeroCancha;
+    private String telefono;
+
 
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
-    private BigDecimal precio;
+    private String mail;
 
-    @Getter @Setter
-   // @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
-    private Estados estados;
 
 
 
@@ -143,10 +136,11 @@ public class Partido implements Comparable<Partido> {
 
 
     @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
+    //@PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     @Column(allowsNull = "true")
     @Getter @Setter
     private java.time.LocalDate lastCheckedIn;
+
 
 
 
@@ -161,7 +155,7 @@ public class Partido implements Comparable<Partido> {
 
     @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
     @ActionLayout(associateWith = "attachment", position = ActionLayout.Position.PANEL)
-    public Partido updateAttachment(
+    public Jugador updateAttachment(
             @Nullable final Blob attachment) {
         setAttachment(attachment);
         return this;
@@ -185,11 +179,11 @@ public class Partido implements Comparable<Partido> {
 
 
 
-    private final static Comparator<Partido> comparator =
-            Comparator.comparing(Partido::getHorario);
+    private final static Comparator<Jugador> comparator =
+            Comparator.comparing(Jugador::getTelefono);
 
     @Override
-    public int compareTo(final Partido other) {
+    public int compareTo(final Jugador other) {
         return comparator.compare(this, other);
     }
 

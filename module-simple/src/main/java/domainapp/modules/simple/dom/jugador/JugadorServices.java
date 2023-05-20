@@ -1,17 +1,11 @@
-package domainapp.modules.simple.dom.partido;
+package domainapp.modules.simple.dom.jugador;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
-
-import domainapp.modules.simple.dom.partido.types.Horarios;
-import domainapp.modules.simple.dom.partido.types.NumeroCancha;
-import domainapp.modules.simple.dom.so.SimpleObject;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -27,12 +21,13 @@ import org.apache.causeway.persistence.jdo.applib.services.JdoSupportService;
 import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.jugador.types.Name;
 
-@Named(SimpleModule.NAMESPACE + ".PartidoServices")
+@Named(SimpleModule.NAMESPACE + ".JugadorService")
 @DomainService(nature = NatureOfService.VIEW)
 @Priority(PriorityPrecedence.EARLY)
 @RequiredArgsConstructor(onConstructor_ = {@Inject} )
-public class PartidoServices {
+public class JugadorServices {
 
     final RepositoryService repositoryService;
     final JdoSupportService jdoSupportService;
@@ -40,19 +35,19 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Partido crearPartido(
-            final Horarios horario, final BigDecimal precio, final NumeroCancha numeroCancha, final LocalDate dia) {
-        return repositoryService.persist(Partido.withName(horario,dia,numeroCancha,precio));
+    public Jugador crearPartido(
+            final String nombre,final String apellido,final String telefono,final String mail) {
+        return repositoryService.persist(Jugador.withName(nombre,apellido,mail,telefono));
     }
 
 
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
 
-
-
-    public Partido buscarPartido(final LocalDate horario) {
+    public Jugador findByNameExact(final String name) {
         return repositoryService.firstMatch(
-                    Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
-                        .withParameter("horario", horario))
+                    Query.named(Jugador.class, Jugador.NAMED_QUERY__FIND_BY_NAME_EXACT)
+                        .withParameter("name", name))
                 .orElse(null);
     }
 
@@ -60,17 +55,18 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Partido> verPartidos() {
-        return repositoryService.allInstances(Partido.class);
+    public List<Jugador> listAll() {
+        return repositoryService.allInstances(Jugador.class);
     }
 
     public void ping() {
-        JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
-        final QPartido candidate = QPartido.candidate();
-        q.range(0, 2);
-        q.orderBy(candidate.horario.asc());
+        JDOQLTypedQuery<Jugador> q = jdoSupportService.newTypesafeQuery(Jugador.class);
+        final QJugador candidate = QJugador.candidate();
+        q.range(0,2);
+        q.orderBy(candidate.telefono.asc());
         q.executeList();
-
     }
+
+
 
 }

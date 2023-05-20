@@ -88,11 +88,11 @@ public class Partido implements Comparable<Partido> {
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
 
     public static Partido withName(final LocalDate horario, final NumeroCancha numeroCancha, final BigDecimal precio) {
-        val simpleObject = new Partido();
-        simpleObject.setHorario(horario);
-        simpleObject.setPrecio(precio);
-        simpleObject.setNumeroCancha(numeroCancha);
-        return simpleObject;
+        val partido = new Partido();
+        partido.setHorario(horario);
+        partido.setPrecio(precio);
+        partido.setNumeroCancha(numeroCancha);
+        return partido;
     }
 
     @Inject @NotPersistent RepositoryService repositoryService;

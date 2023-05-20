@@ -1,4 +1,4 @@
-package domainapp.modules.simple.dom.so.fixture;
+package domainapp.modules.simple.dom.fixture;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

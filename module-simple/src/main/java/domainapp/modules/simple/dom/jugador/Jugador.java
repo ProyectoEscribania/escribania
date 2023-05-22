@@ -58,7 +58,7 @@ import domainapp.modules.simple.SimpleModule;
         schema = SimpleModule.SCHEMA,
         identityType=IdentityType.DATASTORE)
 @Unique(
-        name = "Partido__name__UNQ", members = { "telefono" }
+        name = "Jugador__telefono__UNQ", members = { "telefono" }
 )
 @Queries({
 
@@ -80,7 +80,7 @@ import domainapp.modules.simple.SimpleModule;
 public class Jugador implements Comparable<Jugador> {
 
 
-    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
+    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Jugador.findByNameExact";
 
     public static Jugador withName(final String nombre,final String apellido,final String telefono,final String mail) {
         val jugador = new Jugador();

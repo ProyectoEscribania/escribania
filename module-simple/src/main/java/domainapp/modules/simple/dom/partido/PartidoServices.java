@@ -48,7 +48,8 @@ public class PartidoServices {
 
 
 
-
+    @Action
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Partido buscarPartido(final LocalDate horario) {
         return repositoryService.firstMatch(
                     Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)

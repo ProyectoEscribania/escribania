@@ -35,19 +35,19 @@ public class JugadorServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Jugador crearPartido(
+    public Jugador crearJugador(
             final String nombre,final String apellido,final String telefono,final String mail) {
-        return repositoryService.persist(Jugador.withName(nombre,apellido,mail,telefono));
+        return repositoryService.persist(Jugador.withName(nombre,apellido,telefono,mail));
     }
 
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
 
-    public Jugador findByNameExact(final String name) {
+    public Jugador buscarJugador(final String telefono) {
         return repositoryService.firstMatch(
                     Query.named(Jugador.class, Jugador.NAMED_QUERY__FIND_BY_NAME_EXACT)
-                        .withParameter("name", name))
+                        .withParameter("telefono", telefono))
                 .orElse(null);
     }
 
@@ -55,7 +55,7 @@ public class JugadorServices {
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Jugador> listAll() {
+    public List<Jugador> mostrarTodos() {
         return repositoryService.allInstances(Jugador.class);
     }
 

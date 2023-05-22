@@ -5,6 +5,7 @@
         xmlns:mb3="https://causeway.apache.org/applib/layout/menubars/bootstrap3"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <mb3:primary>
+
         <mb3:menu>
             <mb3:named>Partido</mb3:named>
             <mb3:section>
@@ -17,8 +18,8 @@
             <mb3:named>Jugador</mb3:named>
             <mb3:section>
                 <mb3:serviceAction objectType="simple.JugadorServices" id="crearJugador"/>
-                <mb3:serviceAction objectType="simple.JugadorServices" id="buscarJugadores"/>
-                <mb3:serviceAction objectType="simple.JugadorServices" id="verTodos"/>
+                <mb3:serviceAction objectType="simple.JugadorServices" id="buscarJugador"/>
+                <mb3:serviceAction objectType="simple.JugadorServices" id="mostrarTodos"/>
             </mb3:section>
         </mb3:menu>
         <mb3:menu unreferencedActions="true">

@@ -2,6 +2,7 @@ package domainapp.modules.simple.dom.partido;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.Priority;
@@ -41,8 +42,8 @@ public class PartidoServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Partido crearPartido(
-            final Horarios horario, final BigDecimal precio, final NumeroCancha numeroCancha, final LocalDate dia) {
-        return repositoryService.persist(Partido.withName(horario,dia,numeroCancha,precio));
+            final LocalDate dia, final Horarios horario, final BigDecimal precio, final NumeroCancha numeroCancha) {
+        return repositoryService.persist(Partido.withName(dia,horario,numeroCancha,precio));
     }
 
 
@@ -50,10 +51,10 @@ public class PartidoServices {
 
     @Action
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Partido buscarPartido(final LocalDate horario) {
+    public Partido buscarPartido(final LocalDate dia) {
         return repositoryService.firstMatch(
-                    Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
-                        .withParameter("horario", horario))
+                    Query.named(Partido.class, Partido.NAMED_QUERY__BUSCAR_PARTIDO)
+                        .withParameter("dia",dia))
                 .orElse(null);
     }
 

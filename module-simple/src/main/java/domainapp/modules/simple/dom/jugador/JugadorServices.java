@@ -46,7 +46,7 @@ public class JugadorServices {
 
     public Jugador buscarJugador(final String telefono) {
         return repositoryService.firstMatch(
-                    Query.named(Jugador.class, Jugador.NAMED_QUERY__FIND_BY_NAME_EXACT)
+                    Query.named(Jugador.class, Jugador.NAMED_QUERY__BUSCAR_JUGADOR)
                         .withParameter("telefono", telefono))
                 .orElse(null);
     }
@@ -55,7 +55,7 @@ public class JugadorServices {
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Jugador> mostrarTodos() {
+    public List<Jugador> verJugadores() {
         return repositoryService.allInstances(Jugador.class);
     }
 

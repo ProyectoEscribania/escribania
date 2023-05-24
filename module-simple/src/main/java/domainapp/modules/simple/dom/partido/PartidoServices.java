@@ -2,7 +2,7 @@ package domainapp.modules.simple.dom.partido;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Priority;
@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
+import domainapp.modules.simple.dom.jugador.Jugador;
 import domainapp.modules.simple.dom.partido.types.Horarios;
 import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 import domainapp.modules.simple.dom.so.SimpleObject;
@@ -41,9 +42,15 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Partido crearPartido(
-            final LocalDate dia, final Horarios horario, final BigDecimal precio, final NumeroCancha numeroCancha) {
-        return repositoryService.persist(Partido.withName(dia,horario,numeroCancha,precio));
+    public void crearPartido(
+            final Horarios horario, final BigDecimal precio, final NumeroCancha numeroCancha, final LocalDate dia) {
+
+        try {
+             repositoryService.persist(Partido.withName(horario, dia, numeroCancha, precio));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+        }
     }
 
 
@@ -51,10 +58,13 @@ public class PartidoServices {
 
     @Action
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Partido buscarPartido(final LocalDate dia) {
-        return repositoryService.firstMatch(
-                    Query.named(Partido.class, Partido.NAMED_QUERY__BUSCAR_PARTIDO)
-                        .withParameter("dia",dia))
+    public Partido buscarPartido(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha ) {
+        return repositoryService.uniqueMatch(
+                    Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
+                        .withParameter("horario", horario)
+                            .withParameter("dia", dia)
+                            .withParameter("numeroCancha", numeroCancha)
+                )
                 .orElse(null);
     }
 
@@ -66,6 +76,22 @@ public class PartidoServices {
         return repositoryService.allInstances(Partido.class);
     }
 
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    public List<Partido> verPartidosEnEspera() {
+        return repositoryService.allMatches(
+                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_ESPERA));
+
+    }
+
+
+//    @Action
+//    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+//    public List<Jugador> añadirJugador(Jugador jugador){
+//            List<Jugador> jugadores = new ArrayList<Jugador>();
+//            jugadores.add(jugador);
+//        return  jugadores;
+  //  }
     public void ping() {
         JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
         final QPartido candidate = QPartido.candidate();

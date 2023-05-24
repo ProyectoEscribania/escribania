@@ -16,8 +16,6 @@ import javax.jdo.annotations.Query;
 import javax.jdo.annotations.Unique;
 import javax.jdo.annotations.Version;
 import javax.jdo.annotations.VersionStrategy;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import domainapp.modules.simple.dom.partido.Partido;
@@ -67,7 +65,7 @@ import domainapp.modules.simple.SimpleModule;
 @Queries({
 
         @Query(
-                name = Jugador.NAMED_QUERY__BUSCAR_JUGADOR,
+                name = Jugador.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
                         "FROM domainapp.modules.simple.dom.jugador.Jugador " +
                         "WHERE telefono == :telefono"
@@ -84,7 +82,7 @@ import domainapp.modules.simple.SimpleModule;
 public class Jugador implements Comparable<Jugador> {
 
 
-    static final String NAMED_QUERY__BUSCAR_JUGADOR = "Jugador.buscarJugador";
+    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Jugador.findByNameExact";
 
     public static Jugador withName(final String nombre,final String apellido,final String telefono,final String mail) {
         val jugador = new Jugador();
@@ -119,6 +117,10 @@ public class Jugador implements Comparable<Jugador> {
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
     private String mail;
+
+    @Property
+    @Getter @Setter
+    private Partido partido;
 
 
 

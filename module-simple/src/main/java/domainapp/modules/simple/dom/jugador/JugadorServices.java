@@ -46,7 +46,7 @@ public class JugadorServices {
 
     public Jugador buscarJugador(final String telefono) {
         return repositoryService.firstMatch(
-                    Query.named(Jugador.class, Jugador.NAMED_QUERY__BUSCAR_JUGADOR)
+                    Query.named(Jugador.class, Jugador.NAMED_QUERY__FIND_BY_NAME_EXACT)
                         .withParameter("telefono", telefono))
                 .orElse(null);
     }

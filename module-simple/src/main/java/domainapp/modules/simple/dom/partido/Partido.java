@@ -27,7 +27,6 @@ import domainapp.modules.simple.dom.partido.types.Estados;
 import domainapp.modules.simple.dom.partido.types.Horarios;
 import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 
-import org.apache.causeway.applib.annotation.Collection;
 
 import org.springframework.lang.Nullable;
 
@@ -83,7 +82,7 @@ import domainapp.modules.simple.SimpleModule;
                 name = Partido.NAMED_QUERY__FIND_BY_ESTADO_ESPERA,
                 value = "SELECT " +
                         "FROM domainapp.modules.simple.dom.partido.Partido " +
-                        "WHERE estados == :estados.ESPERA"
+                        "WHERE estados == :espera"
         )
 })
 @DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
@@ -143,7 +142,9 @@ public class Partido implements Comparable<Partido> {
    // @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
     private Estados estados;
 
-    @Collection
+
+    @Property
+    @PropertyLayout()
     @Getter @Setter
     private List<Jugador> jugadorList;
 
@@ -163,19 +164,11 @@ public class Partido implements Comparable<Partido> {
 
 
 
-    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
-    @Column(allowsNull = "true")
-    @Getter @Setter
-    private java.time.LocalDate lastCheckedIn;
-
-
-
-    @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
-    @ActionLayout()
-    public void añadirJugador(Jugador jugador){
-        jugadorList.add(jugador);
-    }
+//    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
+//    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
+//    public void añadirJugador(Jugador jugador){
+//        jugadorList.add(jugador);
+//    }
 
 
 

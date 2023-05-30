@@ -1,11 +1,13 @@
-package domainapp.modules.simple.dom.jugador;
+package domainapp.modules.simple.dom.encargado;
 
 import java.util.List;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import javax.jdo.JDOQLTypedQuery;
+
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -23,12 +25,12 @@ import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
 
-@Named(SimpleModule.NAMESPACE + ".JugadorService")
+@Named(SimpleModule.NAMESPACE + ".EncargadoServices")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Jugador",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
+@DomainServiceLayout(named = "Encargado",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
 @Priority(PriorityPrecedence.EARLY)
 @RequiredArgsConstructor(onConstructor_ = {@Inject} )
-public class JugadorServices {
+public class EncargadoServices {
 
     final RepositoryService repositoryService;
     final JdoSupportService jdoSupportService;
@@ -36,19 +38,23 @@ public class JugadorServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Jugador crearJugador(
-            final String nombre,final String apellido,final String telefono,final String mail) {
-        return repositoryService.persist(Jugador.withName(nombre,apellido,telefono,mail));
+    public Encargado crearEncargado(
+            final String nombre,
+            final String apellido,
+            final String dni,
+            final String localidad
+            ) {
+        return repositoryService.persist(Encargado.withName(nombre,apellido,dni,localidad));
     }
 
 
-    @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
 
-    public Jugador buscarJugador(final String telefono) {
+
+
+    public Encargado buscarEncargado(final String nombre) {
         return repositoryService.firstMatch(
-                    Query.named(Jugador.class, Jugador.NAMED_QUERY__FIND_BY_TEL)
-                        .withParameter("telefono", telefono))
+                    Query.named(Encargado.class, Encargado.NAMED_QUERY__FIND_BY_NAME_EXACT)
+                        .withParameter("nombre", nombre))
                 .orElse(null);
     }
 
@@ -56,18 +62,17 @@ public class JugadorServices {
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Jugador> verJugadores() {
-        return repositoryService.allInstances(Jugador.class);
+    public List<Encargado> verEncargados() {
+        return repositoryService.allInstances(Encargado.class);
     }
 
     public void ping() {
-        JDOQLTypedQuery<Jugador> q = jdoSupportService.newTypesafeQuery(Jugador.class);
-        final QJugador candidate = QJugador.candidate();
-        q.range(0,2);
-        q.orderBy(candidate.telefono.asc());
+        JDOQLTypedQuery<Encargado> q = jdoSupportService.newTypesafeQuery(Encargado.class);
+        final QEncargado candidate = QEncargado.candidate();
+        q.range(0, 2);
+        q.orderBy(candidate.nombre.asc());
         q.executeList();
+
     }
-
-
 
 }

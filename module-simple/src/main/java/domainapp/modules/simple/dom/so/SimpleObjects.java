@@ -11,6 +11,7 @@ import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.BookmarkPolicy;
 import org.apache.causeway.applib.annotation.DomainService;
+import org.apache.causeway.applib.annotation.DomainServiceLayout;
 import org.apache.causeway.applib.annotation.NatureOfService;
 import org.apache.causeway.applib.annotation.PriorityPrecedence;
 import org.apache.causeway.applib.annotation.PromptStyle;
@@ -26,6 +27,8 @@ import domainapp.modules.simple.dom.so.types.Name;
 
 @Named(SimpleModule.NAMESPACE + ".SimpleObjects")
 @DomainService(nature = NatureOfService.VIEW)
+@DomainServiceLayout(named = "SO",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
+
 @Priority(PriorityPrecedence.EARLY)
 @RequiredArgsConstructor(onConstructor_ = {@Inject} )
 public class SimpleObjects {

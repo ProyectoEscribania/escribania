@@ -1,4 +1,5 @@
-package domainapp.modules.simple.dom.jugador;
+package domainapp.modules.simple.dom.encargado;
+
 
 import java.util.Comparator;
 
@@ -20,8 +21,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import domainapp.modules.simple.dom.partido.Partido;
 
-import org.apache.causeway.applib.annotation.Title;
-
 import org.springframework.lang.Nullable;
 
 import org.apache.causeway.applib.annotation.Action;
@@ -33,6 +32,7 @@ import org.apache.causeway.applib.annotation.Property;
 import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
 import org.apache.causeway.applib.annotation.TableDecorator;
+import org.apache.causeway.applib.annotation.Title;
 import org.apache.causeway.applib.jaxb.PersistentEntityAdapter;
 import org.apache.causeway.applib.layout.LayoutConstants;
 import org.apache.causeway.applib.services.message.MessageService;
@@ -58,38 +58,38 @@ import domainapp.modules.simple.SimpleModule;
         schema = SimpleModule.SCHEMA,
         identityType=IdentityType.DATASTORE)
 @Unique(
-        name = "Jugador__telefono__UNQ", members = { "telefono" }
+        name = "Encargado__dni__UNQ", members = { "dni" }
 )
 @Queries({
 
         @Query(
-                name = Jugador.NAMED_QUERY__FIND_BY_TEL,
+                name = Encargado.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.jugador.Jugador " +
-                        "WHERE telefono == :telefono"
+                        "FROM domainapp.modules.simple.dom.encargado.Encargado " +
+                        "WHERE nombre == :nombre"
         )
 })
 @DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
 @Version(strategy= VersionStrategy.DATE_TIME, column="version")
-@Named(SimpleModule.NAMESPACE + ".Jugador")
+@Named(SimpleModule.NAMESPACE + ".Encargado")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
 @DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @XmlJavaTypeAdapter(PersistentEntityAdapter.class)
 @ToString(onlyExplicitlyIncluded = true)
-public class Jugador implements Comparable<Jugador> {
+public class Encargado implements Comparable<Encargado> {
 
 
-    static final String NAMED_QUERY__FIND_BY_TEL = "Jugador.findByTel";
+    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Encargado.findByNameExact";
 
+    public static Encargado withName(final String nombre,final String apellido, final String dni, final String localidad) {
+        val encargado = new Encargado();
+        encargado.setNombre(nombre);
+        encargado.setApellido(apellido);
+        encargado.setDni(dni);
+        encargado.setLocalidad(localidad);
 
-    public static Jugador withName(final String nombre,final String apellido,final String telefono,final String mail) {
-        val jugador = new Jugador();
-        jugador.setNombre(nombre);
-        jugador.setApellido(apellido);
-        jugador.setTelefono(telefono);
-        jugador.setMail(mail);
-        return jugador;
+        return encargado;
     }
 
     @Inject @NotPersistent RepositoryService repositoryService;
@@ -106,20 +106,19 @@ public class Jugador implements Comparable<Jugador> {
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
     private String apellido;
-
-
+    
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
-    private String telefono;
-
+    private String dni;
 
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
-    private String mail;
+    private String localidad;
 
-    @Property
-    @Getter @Setter
-    private Partido partido;
+
+
+
+
 
 
 
@@ -132,18 +131,16 @@ public class Jugador implements Comparable<Jugador> {
             @Column(name = "attachment_bytes")
     })
     @Property()
-    @PropertyLayout(fieldSetId = "content", sequence = "1")
+    @PropertyLayout(fieldSetId = "content", sequence = "6")
     private Blob attachment;
-
 
 
     static final String PROHIBITED_CHARACTERS = "&%$!";
 
 
-
     @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
     @ActionLayout(associateWith = "attachment", position = ActionLayout.Position.PANEL)
-    public Jugador updateAttachment(
+    public Encargado updateAttachment(
             @Nullable final Blob attachment) {
         setAttachment(attachment);
         return this;
@@ -167,12 +164,14 @@ public class Jugador implements Comparable<Jugador> {
 
 
 
-    private final static Comparator<Jugador> comparator =
-            Comparator.comparing(Jugador::getTelefono);
+    private final static Comparator<Encargado> comparator =
+            Comparator.comparing(Encargado::getNombre);
 
     @Override
-    public int compareTo(final Jugador other) {
+    public int compareTo(final Encargado other) {
         return comparator.compare(this, other);
     }
 
 }
+
+

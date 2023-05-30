@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
 
-@Named(SimpleModule.NAMESPACE + ".JugadorService")
+@Named(SimpleModule.NAMESPACE + ".JugadorServices")
 @DomainService(nature = NatureOfService.VIEW)
 @DomainServiceLayout(named = "Jugador",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
 @Priority(PriorityPrecedence.EARLY)
@@ -35,7 +35,7 @@ public class JugadorServices {
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
     public Jugador crearJugador(
             final String nombre,final String apellido,final String telefono,final String mail) {
         return repositoryService.persist(Jugador.withName(nombre,apellido,telefono,mail));
@@ -43,7 +43,7 @@ public class JugadorServices {
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-search")
 
     public Jugador buscarJugador(final String telefono) {
         return repositoryService.firstMatch(
@@ -55,7 +55,7 @@ public class JugadorServices {
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa ="fa-list ")
     public List<Jugador> verJugadores() {
         return repositoryService.allInstances(Jugador.class);
     }

@@ -27,8 +27,6 @@ import domainapp.modules.simple.dom.so.types.Name;
 
 @Named(SimpleModule.NAMESPACE + ".SimpleObjects")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "SO",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
-
 @Priority(PriorityPrecedence.EARLY)
 @RequiredArgsConstructor(onConstructor_ = {@Inject} )
 public class SimpleObjects {

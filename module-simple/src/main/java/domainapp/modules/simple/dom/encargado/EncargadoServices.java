@@ -27,9 +27,9 @@ import domainapp.modules.simple.SimpleModule;
 
 @Named(SimpleModule.NAMESPACE + ".EncargadoServices")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Encargado",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
+@DomainServiceLayout(named = "Encargado", menuBar = DomainServiceLayout.MenuBar.PRIMARY)
 @Priority(PriorityPrecedence.EARLY)
-@RequiredArgsConstructor(onConstructor_ = {@Inject} )
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class EncargadoServices {
 
     final RepositoryService repositoryService;
@@ -37,31 +37,24 @@ public class EncargadoServices {
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Encargado crearEncargado(
-            final String nombre,
-            final String apellido,
-            final String dni,
-            final String localidad
-            ) {
-        return repositoryService.persist(Encargado.withName(nombre,apellido,dni,localidad));
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
+    public Encargado crearEncargado(final String nombre, final String apellido, final String dni, final String localidad) {
+        return repositoryService.persist(Encargado.withName(nombre, apellido, dni, localidad));
     }
 
 
-
-
-
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
     public Encargado buscarEncargado(final String nombre) {
         return repositoryService.firstMatch(
-                    Query.named(Encargado.class, Encargado.NAMED_QUERY__FIND_BY_NAME_EXACT)
-                        .withParameter("nombre", nombre))
+                        Query.named(Encargado.class, Encargado.NAMED_QUERY__FIND_BY_NAME_EXACT)
+                                .withParameter("nombre", nombre))
                 .orElse(null);
     }
 
 
-
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-list")
     public List<Encargado> verEncargados() {
         return repositoryService.allInstances(Encargado.class);
     }

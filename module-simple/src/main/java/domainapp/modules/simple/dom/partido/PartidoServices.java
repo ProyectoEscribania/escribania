@@ -32,7 +32,7 @@ import domainapp.modules.simple.SimpleModule;
 
 @Named(SimpleModule.NAMESPACE + ".PartidoServices")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Partido",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
+@DomainServiceLayout(named = "Partido.png",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
 @Priority(PriorityPrecedence.EARLY)
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PartidoServices {
@@ -42,7 +42,7 @@ public class PartidoServices {
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
     public void crearPartido(
             final Horarios horario, final BigDecimal precio, final NumeroCancha numeroCancha, final LocalDate dia) {
 
@@ -52,7 +52,7 @@ public class PartidoServices {
 
 
     @Action
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-search")
     public Partido buscarPartido(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha) {
         return repositoryService.uniqueMatch(
                 Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
@@ -64,13 +64,13 @@ public class PartidoServices {
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-list")
     public List<Partido> verPartidos() {
         return repositoryService.allInstances(Partido.class);
     }
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-list")
     public List<Partido> verPartidosEnEspera() {
         return repositoryService.allInstances(
                 Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_ESPERA).getResultType());

@@ -28,6 +28,8 @@ import domainapp.modules.simple.dom.partido.types.Horarios;
 import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 
 
+import org.apache.causeway.applib.annotation.HomePage;
+
 import org.springframework.lang.Nullable;
 
 import org.apache.causeway.applib.annotation.Action;
@@ -65,29 +67,29 @@ import domainapp.modules.simple.SimpleModule;
 
 @PersistenceCapable(
         schema = SimpleModule.SCHEMA,
-        identityType=IdentityType.DATASTORE)
+        identityType = IdentityType.DATASTORE)
 @Unique(
-        name = "Partido__name__UNQ", members = { "horario","dia","numeroCancha" }
+        name = "Partido__name__UNQ", members = {"horario", "dia", "numeroCancha"}
 )
 @Queries({
 
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido " +
+                        "FROM domainapp.modules.simple.dom.partido.Partido.png " +
                         "WHERE horario == :horario && dia == :dia && numeroCancha == :numeroCancha"
         ),
 
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_ESTADO_ESPERA,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido " +
+                        "FROM domainapp.modules.simple.dom.partido.Partido.png " +
                         "WHERE estados == :espera"
         )
 })
-@DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
-@Version(strategy= VersionStrategy.DATE_TIME, column="version")
-@Named(SimpleModule.NAMESPACE + ".Partido")
+@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
+@Version(strategy = VersionStrategy.DATE_TIME, column = "version")
+@Named(SimpleModule.NAMESPACE + ".Partido.png")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
 @DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -96,10 +98,10 @@ import domainapp.modules.simple.SimpleModule;
 public class Partido implements Comparable<Partido> {
 
 
-    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
-    static final String NAMED_QUERY__FIND_BY_ESTADO_ESPERA = "Partido.findByEspera";
+    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.png.findByNameExact";
+    static final String NAMED_QUERY__FIND_BY_ESTADO_ESPERA = "Partido.png.findByEspera";
 
-    public static Partido withName(final Horarios horario,final LocalDate dia, final NumeroCancha numeroCancha, final BigDecimal precio) {
+    public static Partido withName(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final BigDecimal precio) {
         val partido = new Partido();
         partido.setDia(dia);
         partido.setHorario(horario);
@@ -111,11 +113,20 @@ public class Partido implements Comparable<Partido> {
     }
 
 
-
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent TitleService titleService;
     @Inject @NotPersistent MessageService messageService;
 
+
+    public String title() {
+        return getDia() + " " + getHorario()+ " " + getNumeroCancha();
+    }
+
+
+
+    public String iconName() {
+        return getEstados().name().toLowerCase();
+    }
 
 
     @Title
@@ -139,7 +150,7 @@ public class Partido implements Comparable<Partido> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
     @Column(allowsNull = "true")
     @Getter @Setter
-   // @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
+    // @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
     private Estados estados;
 
 
@@ -149,10 +160,9 @@ public class Partido implements Comparable<Partido> {
     private List<Jugador> jugadorList;
 
 
-
     @PdfJsViewer
     @Getter @Setter
-    @Persistent(defaultFetchGroup="false", columns = {
+    @Persistent(defaultFetchGroup = "false", columns = {
             @Column(name = "attachment_name"),
             @Column(name = "attachment_mimetype"),
             @Column(name = "attachment_bytes")
@@ -162,8 +172,6 @@ public class Partido implements Comparable<Partido> {
     private Blob attachment;
 
 
-
-
 //    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
 //    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
 //    public void añadirJugador(Jugador jugador){
@@ -171,10 +179,7 @@ public class Partido implements Comparable<Partido> {
 //    }
 
 
-
-
     static final String PROHIBITED_CHARACTERS = "&%$!";
-
 
 
     @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
@@ -184,10 +189,11 @@ public class Partido implements Comparable<Partido> {
         setAttachment(attachment);
         return this;
     }
-    @MemberSupport public Blob default0UpdateAttachment() {
+
+    @MemberSupport
+    public Blob default0UpdateAttachment() {
         return getAttachment();
     }
-
 
 
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
@@ -200,7 +206,6 @@ public class Partido implements Comparable<Partido> {
         messageService.informUser(String.format("'%s' deleted", title));
         repositoryService.removeAndFlush(this);
     }
-
 
 
     private final static Comparator<Partido> comparator =

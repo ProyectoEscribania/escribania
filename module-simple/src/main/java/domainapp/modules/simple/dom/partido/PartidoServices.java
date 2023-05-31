@@ -43,11 +43,11 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
-    public void crearPartido(
+    public Partido crearPartido(
             final Horarios horario, final BigDecimal precio, final NumeroCancha numeroCancha, final LocalDate dia) {
 
-        repositoryService.persist(Partido.withName(horario, dia, numeroCancha, precio));
 
+        return repositoryService.persist(Partido.withName(horario, dia, numeroCancha, precio));
     }
 
 
@@ -78,13 +78,13 @@ public class PartidoServices {
     }
 
 
-    //    @Action
+//        @Action
 //    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-//    public List<Jugador> añadirJugador(Jugador jugador){
-//            List<Jugador> jugadores = new ArrayList<Jugador>();
+//    public void añadirJugador(Jugador jugador){
+//            ;
 //            jugadores.add(jugador);
 //        return  jugadores;
-    //  }
+//      }
     public void ping() {
         JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
         final QPartido candidate = QPartido.candidate();

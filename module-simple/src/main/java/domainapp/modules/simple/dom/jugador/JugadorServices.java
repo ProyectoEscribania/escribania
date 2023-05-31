@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
+import domainapp.modules.simple.dom.partido.Partido;
+
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
@@ -52,7 +54,9 @@ public class JugadorServices {
                 .orElse(null);
     }
 
-
+    public List<Jugador> findByPartido(Partido partido){
+        return partido.getJugadores();
+    }
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa ="fa-list ")

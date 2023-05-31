@@ -22,6 +22,7 @@ import javax.jdo.annotations.VersionStrategy;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import domainapp.modules.simple.dom.jugador.Jugador;
+import domainapp.modules.simple.dom.jugador.JugadorServices;
 import domainapp.modules.simple.dom.partido.types.Estados;
 
 import domainapp.modules.simple.dom.partido.types.Horarios;
@@ -29,6 +30,8 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 
 
 import org.apache.causeway.applib.annotation.HomePage;
+
+import org.apache.causeway.applib.annotation.MinLength;
 
 import org.springframework.lang.Nullable;
 
@@ -117,6 +120,10 @@ public class Partido implements Comparable<Partido> {
     @Inject @NotPersistent TitleService titleService;
     @Inject @NotPersistent MessageService messageService;
 
+    @Inject PartidoServices partidoServices;
+
+    @Inject JugadorServices jugadorServices;
+
 
     public String title() {
         return getDia() + " " + getHorario()+ " " + getNumeroCancha();
@@ -154,10 +161,12 @@ public class Partido implements Comparable<Partido> {
     private Estados estados;
 
 
-    @Property
-    @PropertyLayout()
+    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
+    @Column(allowsNull = "true")
+    @Persistent(mappedBy = "partido", defaultFetchGroup = "true")
     @Getter @Setter
-    private List<Jugador> jugadorList;
+    private List<Jugador> jugadores;
 
 
     @PdfJsViewer
@@ -171,12 +180,14 @@ public class Partido implements Comparable<Partido> {
     @PropertyLayout(fieldSetId = "content", sequence = "1")
     private Blob attachment;
 
-
-//    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
-//    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
-//    public void añadirJugador(Jugador jugador){
-//        jugadorList.add(jugador);
-//    }
+    public List<Jugador> autoCompleteJugador(@MinLength(4) final String search){
+        return jugadorServices.verJugadores();
+    }
+    @Action()
+    @ActionLayout(associateWith = "jugadores", position = ActionLayout.Position.PANEL)
+    public void añadirJugador(String telefono){
+         this.jugadores.add(jugadorServices.buscarJugador(telefono));
+    }
 
 
     static final String PROHIBITED_CHARACTERS = "&%$!";

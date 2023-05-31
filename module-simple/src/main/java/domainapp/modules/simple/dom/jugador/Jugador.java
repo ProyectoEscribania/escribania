@@ -119,6 +119,7 @@ public class Jugador implements Comparable<Jugador> {
 
     @Property
     @Getter @Setter
+    @Column(name = "partido_id")
     private Partido partido;
 
 

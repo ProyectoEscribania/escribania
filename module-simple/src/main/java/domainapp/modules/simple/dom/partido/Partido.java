@@ -79,34 +79,29 @@ import domainapp.modules.simple.SimpleModule;
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido" +
+                        "FROM domainapp.modules.simple.dom.partido.Partido " +
                         "WHERE horario == :horario && dia == :dia && numeroCancha == :numeroCancha"
         ),
 
         @Query(
-                name = Partido.NAMED_QUERY__FIND_BY_ESTADO_ESPERA,
+                name = Partido.NAMED_QUERY__FIND_BY_ESTADO,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido" +
-                        "WHERE estados == :ESPERA"
-        ),
-        @Query(
-                name = Partido.NAMED_QUERY__FIND_BY_ESTADO_CONFIRMADO,
-                value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido" +
-                        "WHERE estados == :CONFIRMADO"
-        ),
-        @Query(
-                name = Partido.NAMED_QUERY__FIND_BY_ESTADO_COMPLETADO,
-                value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido" +
-                        "WHERE estados == :COMPLETADO"
+                        "FROM domainapp.modules.simple.dom.partido.Partido " +
+                        "WHERE estados == :estados"
         ),
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_REPRESENTANTE,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido" +
+                        "FROM domainapp.modules.simple.dom.partido.Partido " +
                         "WHERE representante == :representante"
-        )
+        ),
+        @Query(
+                name = Partido.NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE,
+                value = "SELECT " +
+                        "FROM domainapp.modules.simple.dom.partido.Partido " +
+                        "WHERE representante == :representante && estados == :estados || estados == :estados"
+        ),
+
 })
 @DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 @Version(strategy = VersionStrategy.DATE_TIME, column = "version")
@@ -120,18 +115,17 @@ public class Partido implements Comparable<Partido> {
 
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
-    static final String NAMED_QUERY__FIND_BY_ESTADO_ESPERA = "Partido.findByEspera";
-    static final String NAMED_QUERY__FIND_BY_ESTADO_CONFIRMADO = "Partido.findByConfirmado";
-
-    static final String NAMED_QUERY__FIND_BY_ESTADO_COMPLETADO = "Partido.findByCompletado";
+    static final String NAMED_QUERY__FIND_BY_ESTADO = "Partido.findByEstado";
     static final String NAMED_QUERY__FIND_BY_REPRESENTANTE = "Partido.findByRepresentante";
+
+    static final String NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE = "Partido.findByEstados";
 
     public static Partido crearTurno(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Jugador representante, final double precio) {
         val partido = new Partido();
         partido.setDia(dia);
-        partido.setRepresentante(representante);
         partido.setHorario(horario);
         partido.setNumeroCancha(numeroCancha);
+        partido.setRepresentante(representante);
         partido.setEstados(Estados.CONFIRMADO);
         partido.setPrecio(precio);
 
@@ -143,9 +137,9 @@ public class Partido implements Comparable<Partido> {
         partido.setDia(dia);
         partido.setHorario(horario);
         partido.setNumeroCancha(numeroCancha);
+        partido.setRepresentante(representante);
         partido.setEstados(Estados.ESPERA);
         partido.setPrecio(0);
-        partido.setRepresentante(representante);
 
         return partido;
     }
@@ -156,13 +150,6 @@ public class Partido implements Comparable<Partido> {
     @Inject @NotPersistent MessageService messageService;
 
 
-
-    @Inject JugadorServices jugadorServices;
-
-
-    public String title() {
-        return getDia() + " " + getHorario()+ " " + getNumeroCancha();
-    }
 
 
 
@@ -176,10 +163,12 @@ public class Partido implements Comparable<Partido> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.IDENTITY, sequence = "1")
     private LocalDate dia;
 
+    @Title
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
     private Horarios horario;
 
+    @Title
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     private NumeroCancha numeroCancha;
@@ -189,11 +178,9 @@ public class Partido implements Comparable<Partido> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
     private double precio;
 
-    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
-    @Column(allowsNull = "true")
+    @Title
     @Getter @Setter
-    // @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
     private Estados estados;
 
 
@@ -204,9 +191,10 @@ public class Partido implements Comparable<Partido> {
 //    @Getter @Setter
 //    private List<Jugador> jugadores;
 
-    @Property()
+    @Property(optionality = Optionality.OPTIONAL)
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
     @Getter@Setter
+    @Column(allowsNull = "true")
     private Jugador representante;
 
 
@@ -221,9 +209,9 @@ public class Partido implements Comparable<Partido> {
     @PropertyLayout(fieldSetId = "content", sequence = "1")
     private Blob attachment;
 
-    public List<Jugador> autoCompleteJugador(@MinLength(4) final String search){
-        return jugadorServices.verJugadores();
-    }
+//    public List<Jugador> autoCompleteJugador(@MinLength(4) final String search){
+//        return jugadorServices.verJugadores();
+//    }
 //    @Action()
 //    @ActionLayout(associateWith = "jugadores", position = ActionLayout.Position.PANEL)
 //    public void añadirJugador(String telefono){

@@ -66,18 +66,21 @@ public class PartidoServices {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
     public Partido sacarTurno(
             final Horarios horario, final LocalDate dia, final String telefono) {
+        if (hayPartido(telefono)){
+            return null;
+        }else {
 
+            NumeroCancha numeroCancha = NumeroCancha.Tres;
+            if (buscarPartido(horario, dia, NumeroCancha.Uno) == null) {
+                numeroCancha = NumeroCancha.Uno;
+            } else if (buscarPartido(horario, dia, NumeroCancha.Dos) == null) {
+                numeroCancha = NumeroCancha.Dos;
+            }
 
-        NumeroCancha numeroCancha = NumeroCancha.Tres;
-        if (buscarPartido(horario, dia, NumeroCancha.Uno) == null) {
-            numeroCancha = NumeroCancha.Uno;
-        } else if (buscarPartido(horario, dia, NumeroCancha.Dos) == null) {
-            numeroCancha = NumeroCancha.Dos;
+            Jugador representante = jugadorServices.buscarJugador(telefono);
+
+            return repositoryService.persist(Partido.pedirTurno(horario, dia, numeroCancha, representante));
         }
-
-        Jugador representante = jugadorServices.buscarJugador(telefono);
-
-        return repositoryService.persist(Partido.pedirTurno(horario, dia, numeroCancha, representante));
     }
 
 
@@ -117,7 +120,22 @@ public class PartidoServices {
                         .withParameter("estados", estados));
     }
 
+    public boolean hayPartido(String telefono){
+        Jugador jugador = jugadorServices.buscarJugador(telefono);
+        Estados estadoConfirmado = Estados.CONFIRMADO;
+        Estados estadoEspera = Estados.ESPERA;
+        List<Partido> partidos = repositoryService.allMatches(Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE)
+                .withParameter("representante",jugador)
+                .withParameter("estados",estadoConfirmado)
+                .withParameter("estados",estadoEspera));
 
+        if(partidos != null){
+
+            return true;
+        }
+            else return false;
+
+    }
     //        @Action
 //    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
 //    public void añadirJugador(Jugador jugador){

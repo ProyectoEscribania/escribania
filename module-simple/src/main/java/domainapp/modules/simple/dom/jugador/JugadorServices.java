@@ -9,6 +9,8 @@ import javax.jdo.JDOQLTypedQuery;
 
 import domainapp.modules.simple.dom.partido.Partido;
 
+import domainapp.modules.simple.dom.partido.PartidoServices;
+
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
@@ -36,6 +38,8 @@ public class JugadorServices {
     final JdoSupportService jdoSupportService;
 
 
+
+
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
     public Jugador crearJugador(
@@ -54,10 +58,13 @@ public class JugadorServices {
                 .orElse(null);
     }
 
-    public List<Jugador> findByPartido(Partido partido){
-        return partido.getJugadores();
-    }
-
+//    public List<Jugador> findByPartido(Partido partido){
+//        return partido.getJugadores();
+//    }
+//    public Partido verPartido(){
+//        Jugador representante = buscarJugador();
+//        return partidoServices.buscarPartidoXRepresentante(representante);
+//    }
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa ="fa-list ")
     public List<Jugador> verJugadores() {

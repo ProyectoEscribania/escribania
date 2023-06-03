@@ -79,20 +79,38 @@ import domainapp.modules.simple.SimpleModule;
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido.png " +
+                        "FROM domainapp.modules.simple.dom.partido.Partido" +
                         "WHERE horario == :horario && dia == :dia && numeroCancha == :numeroCancha"
         ),
 
         @Query(
                 name = Partido.NAMED_QUERY__FIND_BY_ESTADO_ESPERA,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.partido.Partido.png " +
-                        "WHERE estados == :espera"
+                        "FROM domainapp.modules.simple.dom.partido.Partido" +
+                        "WHERE estados == :ESPERA"
+        ),
+        @Query(
+                name = Partido.NAMED_QUERY__FIND_BY_ESTADO_CONFIRMADO,
+                value = "SELECT " +
+                        "FROM domainapp.modules.simple.dom.partido.Partido" +
+                        "WHERE estados == :CONFIRMADO"
+        ),
+        @Query(
+                name = Partido.NAMED_QUERY__FIND_BY_ESTADO_COMPLETADO,
+                value = "SELECT " +
+                        "FROM domainapp.modules.simple.dom.partido.Partido" +
+                        "WHERE estados == :COMPLETADO"
+        ),
+        @Query(
+                name = Partido.NAMED_QUERY__FIND_BY_REPRESENTANTE,
+                value = "SELECT " +
+                        "FROM domainapp.modules.simple.dom.partido.Partido" +
+                        "WHERE representante == :representante"
         )
 })
 @DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 @Version(strategy = VersionStrategy.DATE_TIME, column = "version")
-@Named(SimpleModule.NAMESPACE + ".Partido.png")
+@Named(SimpleModule.NAMESPACE + ".Partido")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
 @DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -101,16 +119,33 @@ import domainapp.modules.simple.SimpleModule;
 public class Partido implements Comparable<Partido> {
 
 
-    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.png.findByNameExact";
-    static final String NAMED_QUERY__FIND_BY_ESTADO_ESPERA = "Partido.png.findByEspera";
+    static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
+    static final String NAMED_QUERY__FIND_BY_ESTADO_ESPERA = "Partido.findByEspera";
+    static final String NAMED_QUERY__FIND_BY_ESTADO_CONFIRMADO = "Partido.findByConfirmado";
 
-    public static Partido withName(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final BigDecimal precio) {
+    static final String NAMED_QUERY__FIND_BY_ESTADO_COMPLETADO = "Partido.findByCompletado";
+    static final String NAMED_QUERY__FIND_BY_REPRESENTANTE = "Partido.findByRepresentante";
+
+    public static Partido crearTurno(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Jugador representante, final double precio) {
+        val partido = new Partido();
+        partido.setDia(dia);
+        partido.setRepresentante(representante);
+        partido.setHorario(horario);
+        partido.setNumeroCancha(numeroCancha);
+        partido.setEstados(Estados.CONFIRMADO);
+        partido.setPrecio(precio);
+
+        return partido;
+    }
+
+    public static Partido pedirTurno(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Jugador representante) {
         val partido = new Partido();
         partido.setDia(dia);
         partido.setHorario(horario);
-        partido.setPrecio(precio);
         partido.setNumeroCancha(numeroCancha);
         partido.setEstados(Estados.ESPERA);
+        partido.setPrecio(0);
+        partido.setRepresentante(representante);
 
         return partido;
     }
@@ -120,7 +155,7 @@ public class Partido implements Comparable<Partido> {
     @Inject @NotPersistent TitleService titleService;
     @Inject @NotPersistent MessageService messageService;
 
-    @Inject PartidoServices partidoServices;
+
 
     @Inject JugadorServices jugadorServices;
 
@@ -149,9 +184,10 @@ public class Partido implements Comparable<Partido> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     private NumeroCancha numeroCancha;
 
+    @Property(editing = Editing.ENABLED)
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
-    private BigDecimal precio;
+    private double precio;
 
     @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
@@ -161,12 +197,17 @@ public class Partido implements Comparable<Partido> {
     private Estados estados;
 
 
-    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
+//    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
+//    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
+//    @Column(allowsNull = "true")
+//    @Persistent(mappedBy = "partido", defaultFetchGroup = "true")
+//    @Getter @Setter
+//    private List<Jugador> jugadores;
+
+    @Property()
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
-    @Column(allowsNull = "true")
-    @Persistent(mappedBy = "partido", defaultFetchGroup = "true")
-    @Getter @Setter
-    private List<Jugador> jugadores;
+    @Getter@Setter
+    private Jugador representante;
 
 
     @PdfJsViewer
@@ -183,11 +224,11 @@ public class Partido implements Comparable<Partido> {
     public List<Jugador> autoCompleteJugador(@MinLength(4) final String search){
         return jugadorServices.verJugadores();
     }
-    @Action()
-    @ActionLayout(associateWith = "jugadores", position = ActionLayout.Position.PANEL)
-    public void añadirJugador(String telefono){
-         this.jugadores.add(jugadorServices.buscarJugador(telefono));
-    }
+//    @Action()
+//    @ActionLayout(associateWith = "jugadores", position = ActionLayout.Position.PANEL)
+//    public void añadirJugador(String telefono){
+//         this.jugadores.add(jugadorServices.buscarJugador(telefono));
+//    }
 
 
     static final String PROHIBITED_CHARACTERS = "&%$!";
@@ -198,8 +239,21 @@ public class Partido implements Comparable<Partido> {
     public Partido updateAttachment(
             @Nullable final Blob attachment) {
         setAttachment(attachment);
+        return this;}
+    @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
+    @ActionLayout(position = ActionLayout.Position.PANEL)
+    public Partido confirmar() {
+        setEstados(Estados.CONFIRMADO);
         return this;
     }
+
+    @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
+    @ActionLayout(position = ActionLayout.Position.PANEL)
+    public Partido rechazar() {
+        setEstados(Estados.RECHAZADO);
+        return this;
+    }
+
 
     @MemberSupport
     public Blob default0UpdateAttachment() {
@@ -212,7 +266,7 @@ public class Partido implements Comparable<Partido> {
             fieldSetId = LayoutConstants.FieldSetId.IDENTITY,
             position = ActionLayout.Position.PANEL,
             describedAs = "Deletes this object from the persistent datastore")
-    public void delete() {
+    public void darDeBaja() {
         final String title = titleService.titleOf(this);
         messageService.informUser(String.format("'%s' deleted", title));
         repositoryService.removeAndFlush(this);

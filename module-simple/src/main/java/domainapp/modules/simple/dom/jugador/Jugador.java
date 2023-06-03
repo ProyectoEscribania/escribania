@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import domainapp.modules.simple.dom.partido.Partido;
 
+import org.apache.causeway.applib.annotation.Navigable;
 import org.apache.causeway.applib.annotation.Title;
 
 import org.springframework.lang.Nullable;
@@ -118,6 +119,7 @@ public class Jugador implements Comparable<Jugador> {
     private String mail;
 
     @Property
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
     @Getter @Setter
     @Column(name = "partido_id")
     private Partido partido;
@@ -153,7 +155,11 @@ public class Jugador implements Comparable<Jugador> {
         return getAttachment();
     }
 
-
+//    @Action
+//    @ActionLayout(associateWith = "partido", position = ActionLayout.Position.PANEL)
+//    public Partido verPartido(){
+//        return partido;
+//    }
 
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(

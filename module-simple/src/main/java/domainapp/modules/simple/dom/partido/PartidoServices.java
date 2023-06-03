@@ -1,6 +1,5 @@
 package domainapp.modules.simple.dom.partido;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,6 +8,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
+import domainapp.modules.simple.dom.jugador.Jugador;
+import domainapp.modules.simple.dom.jugador.JugadorServices;
 import domainapp.modules.simple.dom.partido.types.Horarios;
 import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 
@@ -32,22 +33,32 @@ import domainapp.modules.simple.SimpleModule;
 
 @Named(SimpleModule.NAMESPACE + ".PartidoServices")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Partido.png",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
+@DomainServiceLayout(named = "Partido",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
 @Priority(PriorityPrecedence.EARLY)
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PartidoServices {
 
     final RepositoryService repositoryService;
     final JdoSupportService jdoSupportService;
+    final JugadorServices jugadorServices;
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
     public Partido crearPartido(
-            final Horarios horario, final BigDecimal precio, final NumeroCancha numeroCancha, final LocalDate dia) {
+            final Horarios horario, final NumeroCancha numeroCancha, final LocalDate dia, final Jugador representante, final double precio) {
 
 
-        return repositoryService.persist(Partido.withName(horario, dia, numeroCancha, precio));
+        return repositoryService.persist(Partido.crearTurno(horario, dia, numeroCancha, representante, precio));
+    }
+
+    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
+    public Partido sacarTurno(
+            final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final String telefono) {
+            Jugador representante = jugadorServices.buscarJugador(telefono);
+
+        return repositoryService.persist(Partido.pedirTurno(horario, dia, numeroCancha,representante));
     }
 
 
@@ -62,6 +73,13 @@ public class PartidoServices {
         ).orElse(null);
     }
 
+    public Partido buscarPartidoXRepresentante(final Jugador representante) {
+        return repositoryService.uniqueMatch(
+                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_REPRESENTANTE)
+                        .withParameter("representante", representante)
+
+        ).orElse(null);
+    }
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-list")
@@ -77,7 +95,20 @@ public class PartidoServices {
 
     }
 
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-list")
+    public List<Partido> verPartidosCompletados() {
+        return repositoryService.allInstances(
+                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_COMPLETADO).getResultType());
 
+    }
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-list")
+    public List<Partido> verPartidosConfirmados() {
+        return repositoryService.allInstances(
+                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_CONFIRMADO).getResultType());
+
+    }
 //        @Action
 //    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
 //    public void añadirJugador(Jugador jugador){

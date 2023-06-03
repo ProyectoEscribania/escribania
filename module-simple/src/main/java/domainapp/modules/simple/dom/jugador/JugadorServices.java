@@ -7,9 +7,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
-import domainapp.modules.simple.dom.partido.Partido;
-
-import domainapp.modules.simple.dom.partido.PartidoServices;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;

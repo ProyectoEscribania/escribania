@@ -94,14 +94,13 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
-    public Partido buscarPartidoPorRepresentante(final String telefono) {
+    public List<Partido> buscarPartidoPorRepresentante(final String telefono) {
 
         Jugador representante = jugadorServices.buscarJugador(telefono);
 
-        return repositoryService.uniqueMatch(
+        return repositoryService.allMatches(
                 Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_REPRESENTANTE)
-                        .withParameter("representante", representante)
-        ).orElse(null);
+                        .withParameter("representante", representante));
     }
 
     @Action(semantics = SemanticsOf.SAFE)

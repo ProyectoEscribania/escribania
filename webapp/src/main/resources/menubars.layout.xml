@@ -9,9 +9,11 @@
             <mb3:named>Partido</mb3:named>
             <mb3:section>
                 <mb3:serviceAction objectType="simple.PartidoServices" id="crearPartido"/>
-                <mb3:serviceAction objectType="simple.PartidoServices" id="buscarPartido"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="sacarTurno"/>
                 <mb3:serviceAction objectType="simple.PartidoServices" id="verPartidos"/>
-                <mb3:serviceAction objectType="simple.PartidoServices" id="verPartidosEnEspera"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="buscarPartido"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="buscarPartidoPorRepresentante"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="buscarPartidosPorEstados"/>
             </mb3:section>
         </mb3:menu>
         <mb3:menu>

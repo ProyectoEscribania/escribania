@@ -8,7 +8,7 @@
         <version>2.0.0-RC1</version>
     </parent>
 
-    <artifactId>simpleapp-jdo-webapp</artifactId>
+    <artifactId>CanchaUP-webapp</artifactId>
     <name>SimpleApp (JDO) - Webapp</name>
 
     <description>
@@ -183,26 +183,19 @@
             <artifactId>p6spy-spring-boot-starter</artifactId>
             <version>1.8.0</version>
         </dependency>
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.postgresql/postgresql &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.postgresql</groupId>-->
+<!--            <artifactId>postgresql</artifactId>-->
+<!--            <version>42.6.0</version>-->
+<!--        </dependency>-->
+
+
     </dependencies>
 
     <profiles>
 
-        <profile>
-            <id>jdbc-sqlserver</id>
-            <activation>
-                <property>
-                    <name>spring.profiles.active</name>
-                    <value>SQLSERVER</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.microsoft.sqlserver</groupId>
-                    <artifactId>mssql-jdbc</artifactId>
-                    <version>7.4.1.jre8</version>
-                </dependency>
-            </dependencies>
-        </profile>
 
         <profile>
             <id>jdbc-postgresql</id>

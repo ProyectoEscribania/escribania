@@ -1,6 +1,7 @@
 package domainapp.modules.simple.dom.jugador;
 
 import java.util.Comparator;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -118,11 +119,10 @@ public class Jugador implements Comparable<Jugador> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
     private String mail;
 
-    @Property
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
     @Getter @Setter
-    @Column(name = "partido_id")
-    private Partido partido;
+    @Persistent(mappedBy = "representante")
+    private List<Partido> partidos;
 
 
 

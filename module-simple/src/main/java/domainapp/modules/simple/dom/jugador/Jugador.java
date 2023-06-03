@@ -85,12 +85,13 @@ public class Jugador implements Comparable<Jugador> {
     static final String NAMED_QUERY__FIND_BY_TEL = "Jugador.findByTel";
 
 
-    public static Jugador withName(final String nombre,final String apellido,final String telefono,final String mail) {
+    public static Jugador withName(final String nombre,final String apellido,final String telefono,final String mail,final String password) {
         val jugador = new Jugador();
         jugador.setNombre(nombre);
         jugador.setApellido(apellido);
         jugador.setTelefono(telefono);
         jugador.setMail(mail);
+        jugador.setPassword(password);
         return jugador;
     }
 
@@ -123,6 +124,11 @@ public class Jugador implements Comparable<Jugador> {
     @Getter @Setter
     @Persistent(mappedBy = "representante")
     private List<Partido> partidos;
+
+    @Property
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
+    @Getter@Setter
+    private String password;
 
 
 

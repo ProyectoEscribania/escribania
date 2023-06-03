@@ -40,8 +40,8 @@ public class JugadorServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
     public Jugador crearJugador(
-            final String nombre,final String apellido,final String telefono,final String mail) {
-        return repositoryService.persist(Jugador.withName(nombre,apellido,telefono,mail));
+            final String nombre,final String apellido,final String telefono,final String mail,final String password) {
+        return repositoryService.persist(Jugador.withName(nombre,apellido,telefono,mail,password));
     }
 
 

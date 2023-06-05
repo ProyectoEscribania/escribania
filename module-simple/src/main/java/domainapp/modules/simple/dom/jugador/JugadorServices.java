@@ -41,9 +41,8 @@ public class JugadorServices {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
     public Jugador crearJugador(
             final String nombre,final String apellido,final String telefono,final String mail,final String password) {
-        return repositoryService.persist(Jugador.withName(nombre,apellido,telefono,mail,password));
+        return repositoryService.persist(Jugador.crearJugador(nombre,apellido,telefono,mail,password));
     }
-
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-search")
@@ -75,7 +74,4 @@ public class JugadorServices {
         q.orderBy(candidate.telefono.asc());
         q.executeList();
     }
-
-
-
 }

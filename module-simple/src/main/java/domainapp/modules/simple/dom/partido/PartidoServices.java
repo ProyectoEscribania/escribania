@@ -7,6 +7,7 @@ import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
+import javax.jdo.annotations.NotPersistent;
 
 import domainapp.modules.simple.dom.jugador.Jugador;
 import domainapp.modules.simple.dom.jugador.JugadorServices;
@@ -25,12 +26,14 @@ import org.apache.causeway.applib.annotation.PriorityPrecedence;
 import org.apache.causeway.applib.annotation.PromptStyle;
 import org.apache.causeway.applib.annotation.SemanticsOf;
 import org.apache.causeway.applib.query.Query;
+import org.apache.causeway.applib.services.message.MessageService;
 import org.apache.causeway.applib.services.repository.RepositoryService;
 import org.apache.causeway.persistence.jdo.applib.services.JdoSupportService;
 
 import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
+
 
 @Named(SimpleModule.NAMESPACE + ".PartidoServices")
 @DomainService(nature = NatureOfService.VIEW)
@@ -42,45 +45,36 @@ public class PartidoServices {
     final RepositoryService repositoryService;
     final JdoSupportService jdoSupportService;
     final JugadorServices jugadorServices;
+    final MessageService messageService;
+
+
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
-    public Partido crearPartido(
-            final Horarios horario, final LocalDate dia, final String telefono, final double precio) {
-
-        NumeroCancha numeroCancha = NumeroCancha.Tres;
-        if (buscarPartido(horario, dia, NumeroCancha.Uno) == null) {
-            numeroCancha = NumeroCancha.Uno;
-        } else if (buscarPartido(horario, dia, NumeroCancha.Dos) == null) {
-            numeroCancha = NumeroCancha.Dos;
-        }
-
+    public Partido crearPartido(final Horarios horario, final LocalDate dia, final String telefono, final double precio) {
+        NumeroCancha numeroCancha = definirCancha(dia, horario);
         Jugador representante = jugadorServices.buscarJugador(telefono);
-
-
         return repositoryService.persist(Partido.crearTurno(horario, dia, numeroCancha, representante, precio));
     }
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
-    public Partido sacarTurno(
-            final Horarios horario, final LocalDate dia, final String telefono) {
-        if (hayPartido(telefono)){
+    public Partido sacarTurno(final Horarios horario, final LocalDate dia, final String telefono) {
+        Jugador representante = jugadorServices.buscarJugador(telefono);
+
+        if (representante == null) {
+            messageService.warnUser("NO EXISTE NINGUNA CUENTA ASOCIADA A ESE NUMERO DE TELEFONO");
             return null;
-        }else {
-
-            NumeroCancha numeroCancha = NumeroCancha.Tres;
-            if (buscarPartido(horario, dia, NumeroCancha.Uno) == null) {
-                numeroCancha = NumeroCancha.Uno;
-            } else if (buscarPartido(horario, dia, NumeroCancha.Dos) == null) {
-                numeroCancha = NumeroCancha.Dos;
-            }
-
-            Jugador representante = jugadorServices.buscarJugador(telefono);
-
-            return repositoryService.persist(Partido.pedirTurno(horario, dia, numeroCancha, representante));
         }
+
+        if (hayPartido(telefono)) {
+            messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE");
+            return null;
+        }
+
+        NumeroCancha numeroCancha = definirCancha(dia, horario);
+        return repositoryService.persist(Partido.pedirTurno(horario, dia, numeroCancha, representante));
     }
 
 
@@ -98,9 +92,7 @@ public class PartidoServices {
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
     public List<Partido> buscarPartidoPorRepresentante(final String telefono) {
-
         Jugador representante = jugadorServices.buscarJugador(telefono);
-
         return repositoryService.allMatches(
                 Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_REPRESENTANTE)
                         .withParameter("representante", representante));
@@ -112,6 +104,7 @@ public class PartidoServices {
         return repositoryService.allInstances(Partido.class);
     }
 
+
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
     public List<Partido> buscarPartidosPorEstados(final Estados estados) {
@@ -120,29 +113,24 @@ public class PartidoServices {
                         .withParameter("estados", estados));
     }
 
-    public boolean hayPartido(String telefono){
+
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
+    public boolean hayPartido(final String telefono) {
         Jugador jugador = jugadorServices.buscarJugador(telefono);
-        Estados estadoConfirmado = Estados.CONFIRMADO;
-        Estados estadoEspera = Estados.ESPERA;
-        List<Partido> partidos = repositoryService.allMatches(Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE)
-                .withParameter("representante",jugador)
-                .withParameter("estados",estadoConfirmado)
-                .withParameter("estados",estadoEspera));
-
-        if(partidos != null){
-
-            return true;
-        }
-            else return false;
-
+        return !(repositoryService.allMatches(Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE)
+                .withParameter("representante", jugador)
+                .withParameter("estados", Estados.CONFIRMADO)
+                .withParameter("estados2", Estados.ESPERA))).isEmpty();
     }
-    //        @Action
-//    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-//    public void añadirJugador(Jugador jugador){
-//            ;
-//            jugadores.add(jugador);
-//        return  jugadores;
-//      }
+
+    public NumeroCancha definirCancha(final LocalDate dia, final Horarios horario) {
+        NumeroCancha numeroCancha = NumeroCancha.Tres;
+        if (buscarPartido(horario, dia, NumeroCancha.Uno) == null) numeroCancha = NumeroCancha.Uno;
+        else if (buscarPartido(horario, dia, NumeroCancha.Dos) == null) numeroCancha = NumeroCancha.Dos;
+        return numeroCancha;
+    }
+
     public void ping() {
         JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
         final QPartido candidate = QPartido.candidate();

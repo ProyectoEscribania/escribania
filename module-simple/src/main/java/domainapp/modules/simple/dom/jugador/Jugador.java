@@ -58,9 +58,9 @@ import domainapp.modules.simple.SimpleModule;
 
 @PersistenceCapable(
         schema = SimpleModule.SCHEMA,
-        identityType=IdentityType.DATASTORE)
+        identityType = IdentityType.DATASTORE)
 @Unique(
-        name = "Jugador__telefono__UNQ", members = { "telefono" }
+        name = "Jugador__telefono__UNQ", members = {"telefono"}
 )
 @Queries({
 
@@ -71,8 +71,8 @@ import domainapp.modules.simple.SimpleModule;
                         "WHERE telefono == :telefono"
         )
 })
-@DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
-@Version(strategy= VersionStrategy.DATE_TIME, column="version")
+@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
+@Version(strategy = VersionStrategy.DATE_TIME, column = "version")
 @Named(SimpleModule.NAMESPACE + ".Jugador")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
 @DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
@@ -81,11 +81,9 @@ import domainapp.modules.simple.SimpleModule;
 @ToString(onlyExplicitlyIncluded = true)
 public class Jugador implements Comparable<Jugador> {
 
-
     static final String NAMED_QUERY__FIND_BY_TEL = "Jugador.findByTel";
 
-
-    public static Jugador withName(final String nombre,final String apellido,final String telefono,final String mail,final String password) {
+    public static Jugador crearJugador(final String nombre, final String apellido, final String telefono, final String mail, final String password) {
         val jugador = new Jugador();
         jugador.setNombre(nombre);
         jugador.setApellido(apellido);
@@ -100,7 +98,6 @@ public class Jugador implements Comparable<Jugador> {
     @Inject @NotPersistent MessageService messageService;
 
 
-
     @Title
     @Getter @Setter @ToString.Include
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.IDENTITY, sequence = "1")
@@ -110,62 +107,21 @@ public class Jugador implements Comparable<Jugador> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
     private String apellido;
 
-
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     private String telefono;
-
 
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
     private String mail;
 
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
-    @Getter @Setter
-    @Persistent(mappedBy = "representante")
-    private List<Partido> partidos;
-
     @Property
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
-    @Getter@Setter
+    @Getter @Setter
     private String password;
 
 
-
-
-    @PdfJsViewer
-    @Getter @Setter
-    @Persistent(defaultFetchGroup="false", columns = {
-            @Column(name = "attachment_name"),
-            @Column(name = "attachment_mimetype"),
-            @Column(name = "attachment_bytes")
-    })
-    @Property()
-    @PropertyLayout(fieldSetId = "content", sequence = "1")
-    private Blob attachment;
-
-
-
     static final String PROHIBITED_CHARACTERS = "&%$!";
-
-
-
-    @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
-    @ActionLayout(associateWith = "attachment", position = ActionLayout.Position.PANEL)
-    public Jugador updateAttachment(
-            @Nullable final Blob attachment) {
-        setAttachment(attachment);
-        return this;
-    }
-    @MemberSupport public Blob default0UpdateAttachment() {
-        return getAttachment();
-    }
-
-//    @Action
-//    @ActionLayout(associateWith = "partido", position = ActionLayout.Position.PANEL)
-//    public Partido verPartido(){
-//        return partido;
-//    }
 
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(
@@ -178,8 +134,6 @@ public class Jugador implements Comparable<Jugador> {
         repositoryService.removeAndFlush(this);
     }
 
-
-
     private final static Comparator<Jugador> comparator =
             Comparator.comparing(Jugador::getTelefono);
 
@@ -187,5 +141,16 @@ public class Jugador implements Comparable<Jugador> {
     public int compareTo(final Jugador other) {
         return comparator.compare(this, other);
     }
+
+//    @PdfJsViewer
+//    @Getter @Setter
+//    @Persistent(defaultFetchGroup = "false", columns = {
+//            @Column(name = "attachment_name"),
+//            @Column(name = "attachment_mimetype"),
+//            @Column(name = "attachment_bytes")
+//    })
+//    @Property()
+//    @PropertyLayout(fieldSetId = "content", sequence = "1")
+//    private Blob attachment;
 
 }

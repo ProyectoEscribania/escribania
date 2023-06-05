@@ -11,6 +11,7 @@ import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.BookmarkPolicy;
 import org.apache.causeway.applib.annotation.DomainService;
+import org.apache.causeway.applib.annotation.DomainServiceLayout;
 import org.apache.causeway.applib.annotation.NatureOfService;
 import org.apache.causeway.applib.annotation.PriorityPrecedence;
 import org.apache.causeway.applib.annotation.PromptStyle;
@@ -22,7 +23,7 @@ import org.apache.causeway.persistence.jdo.applib.services.JdoSupportService;
 import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
-import domainapp.modules.simple.types.Name;
+import domainapp.modules.simple.dom.so.types.Name;
 
 @Named(SimpleModule.NAMESPACE + ".SimpleObjects")
 @DomainService(nature = NatureOfService.VIEW)
@@ -43,7 +44,7 @@ public class SimpleObjects {
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT, promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<SimpleObject> findByName(
             @Name final String name
             ) {
@@ -63,12 +64,10 @@ public class SimpleObjects {
 
 
     @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<SimpleObject> listAll() {
         return repositoryService.allInstances(SimpleObject.class);
     }
-
-
 
     public void ping() {
         JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
@@ -77,5 +76,7 @@ public class SimpleObjects {
         q.orderBy(candidate.name.asc());
         q.executeList();
     }
+
+
 
 }

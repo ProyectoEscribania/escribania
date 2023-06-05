@@ -1,8 +1,7 @@
-             __
-           / _|                  powered by Spring Boot ${spring-boot.version}
-   __ _ ___| |_    ___ __ _ _   _ ___  _____      ____ _ _   _
-  / _` / __|  _|  / __/ _` | | | / __|/ _ \ \ /\ / / _` | | | |
- | (_| \__ \ |   | (_| (_| | |_| \__ \  __/\ V  V / (_| | |_| |
-  \__,_|___/_|    \___\__,_|\__,_|___/\___| \_/\_/ \__,_|\__, |
-                                                          __/ |
-                                                         |___/
+ CCCCC   AAAAA   N    N   CCCCC  H    H    AAAAA    U   U   PPPP
+C       A     A  NN   N  C       H    H   A     A   U   U   P   P
+C       A     A  N N  N  C       H    H   A     A   U   U   P   P
+C       AAAAAAA  N  N N  C       HHHHHH   AAAAAAA   U   U   PPPP
+C       A     A  N   NN  C       H    H   A     A   U   U   P
+C       A     A  N    N  C       H    H   A     A   U   U   P
+ CCCCC  A     A  N    N   CCCCC  H    H   A     A    UUU    P

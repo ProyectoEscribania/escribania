@@ -50,17 +50,17 @@ causeway:
         regular-user:
           role-name: "causeway-ext-secman-user"
       permissions-evaluation-policy: allow_beats_veto
-      user-menu-me-action-policy: hide
+      user-menu-me-action-policy:
 
   viewer:
     common:
       application:
-        about: Simple App
+        about: Cancha UP
         brand-logo-signin: images/apache-causeway/logo-banner-591x120.png
         brand-logo-header: images/apache-causeway/logo-65x48.png
         favicon-url: images/favicon.png
         menubars-layout-file: menubars.layout.xml
-        name: Simple App
+        name: Cancha UP
         # https://stackoverflow.com/a/38983935/56880
         version: @project.version@
       credit:

@@ -6,11 +6,30 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <mb3:primary>
         <mb3:menu>
-            <mb3:named>Simple Objects</mb3:named>
+            <mb3:named>Partido</mb3:named>
             <mb3:section>
-                <mb3:serviceAction objectType="simple.SimpleObjects" id="create"/>
-                <mb3:serviceAction objectType="simple.SimpleObjects" id="findByName"/>
-                <mb3:serviceAction objectType="simple.SimpleObjects" id="listAll"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="crearPartido"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="sacarTurno"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="verPartidos"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="buscarPartido"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="buscarPartidoPorRepresentante"/>
+                <mb3:serviceAction objectType="simple.PartidoServices" id="buscarPartidosPorEstados"/>
+            </mb3:section>
+        </mb3:menu>
+        <mb3:menu>
+            <mb3:named>Jugador</mb3:named>
+            <mb3:section>
+                <mb3:serviceAction objectType="simple.JugadorServices" id="crearJugador"/>
+                <mb3:serviceAction objectType="simple.JugadorServices" id="buscarJugador"/>
+                <mb3:serviceAction objectType="simple.JugadorServices" id="verJugadores"/>
+            </mb3:section>
+        </mb3:menu>
+        <mb3:menu>
+            <mb3:named>Encargado</mb3:named>
+            <mb3:section>
+                <mb3:serviceAction objectType="simple.EncargadoServices" id="crearEncargado"/>
+                <mb3:serviceAction objectType="simple.EncargadoServices" id="buscarEncargado"/>
+                <mb3:serviceAction objectType="simple.EncargadoServices" id="verEncargados"/>
             </mb3:section>
         </mb3:menu>
         <mb3:menu unreferencedActions="true">

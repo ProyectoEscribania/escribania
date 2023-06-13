@@ -68,9 +68,9 @@ public class PartidoServices {
             return null;
         }
 
-        if (hayPartido(telefono)) {
+        if (!hayPartido(telefono).isEmpty()) {
             messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE");
-            return null;
+            return hayPartido(telefono).get(0);
         }
 
         NumeroCancha numeroCancha = definirCancha(dia, horario);
@@ -114,14 +114,14 @@ public class PartidoServices {
     }
 
 
-    @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
-    public boolean hayPartido(final String telefono) {
+//    @Action(semantics = SemanticsOf.SAFE)
+//    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
+    public List<Partido> hayPartido(final String telefono) {
         Jugador jugador = jugadorServices.buscarJugador(telefono);
-        return !(repositoryService.allMatches(Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE)
+        return (repositoryService.allMatches(Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE)
                 .withParameter("representante", jugador)
                 .withParameter("estados", Estados.CONFIRMADO)
-                .withParameter("estados2", Estados.ESPERA))).isEmpty();
+                .withParameter("estados2", Estados.ESPERA)));
     }
 
     public NumeroCancha definirCancha(final LocalDate dia, final Horarios horario) {

@@ -35,16 +35,16 @@ public class SimpleObjects {
     final JdoSupportService jdoSupportService;
 
 
-    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+//    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+//    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public SimpleObject create(
             @Name final String name) {
         return repositoryService.persist(SimpleObject.withName(name));
     }
 
 
-    @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+//    @Action(semantics = SemanticsOf.SAFE)
+//    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<SimpleObject> findByName(
             @Name final String name
             ) {
@@ -63,8 +63,8 @@ public class SimpleObjects {
 
 
 
-    @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+//    @Action(semantics = SemanticsOf.SAFE)
+//    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<SimpleObject> listAll() {
         return repositoryService.allInstances(SimpleObject.class);
     }

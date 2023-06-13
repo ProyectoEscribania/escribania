@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import domainapp.modules.simple.dom.partido.Partido;
 
+import org.apache.causeway.applib.annotation.HomePage;
 import org.apache.causeway.applib.annotation.Navigable;
 import org.apache.causeway.applib.annotation.Title;
 

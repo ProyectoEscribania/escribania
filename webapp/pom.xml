@@ -196,6 +196,22 @@
 
     <profiles>
 
+        <profile>
+            <id>jdbc-sqlserver</id>
+            <activation>
+                <property>
+                    <name>spring.profiles.active</name>
+                    <value>SQLSERVER</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.microsoft.sqlserver</groupId>
+                    <artifactId>mssql-jdbc</artifactId>
+                    <version>7.4.1.jre8</version>
+                </dependency>
+            </dependencies>
+        </profile>
 
         <profile>
             <id>jdbc-postgresql</id>

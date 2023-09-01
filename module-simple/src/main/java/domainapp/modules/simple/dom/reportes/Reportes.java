@@ -59,7 +59,7 @@ public class Reportes {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Blob generarReportePartidosPDF() throws JRException {
 
-        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartiodosReporte.jrxml";
+        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
         List<Partido> data = partidoServices.verPartidos();
 
@@ -83,7 +83,7 @@ public class Reportes {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Blob generarReportePartidosPorEstadoPDF(Estados estados) throws JRException {
 
-        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartiodosReporte.jrxml";
+        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
         List<Partido> data = partidoServices.verPartidos();
 
@@ -110,7 +110,7 @@ public class Reportes {
     public Blob generarReportePartidosPorJugadorPDF(String telefono) throws JRException {
 
 
-        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartiodosReporte.jrxml";
+        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
         List<Partido> data = partidoServices.verPartidos();
 
@@ -137,7 +137,10 @@ public class Reportes {
     public Blob compilacionYCarga(String path, Map<String, Object> parameters, JRBeanCollectionDataSource ds) throws JRException {
 
         JasperReport reporteCompilado = JasperCompileManager.compileReport(path);
-        JasperPrint JasperPrint = JasperFillManager.fillReport(reporteCompilado, parameters, ds);
+
+        JasperPrint JasperPrint = parameters == null ? JasperFillManager.fillReport(reporteCompilado, null, ds) : JasperFillManager.fillReport(reporteCompilado, parameters);
+
+
         byte[] reportBytes = JasperExportManager.exportReportToPdf(JasperPrint);
         return new Blob("Reporte.pdf", "application/pdf", reportBytes);
     }

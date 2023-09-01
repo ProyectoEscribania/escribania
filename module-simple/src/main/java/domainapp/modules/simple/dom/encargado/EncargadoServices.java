@@ -5,9 +5,7 @@ import java.util.List;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import javax.jdo.JDOQLTypedQuery;
-
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;

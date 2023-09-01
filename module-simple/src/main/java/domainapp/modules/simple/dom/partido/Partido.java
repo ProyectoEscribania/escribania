@@ -19,14 +19,6 @@ import javax.jdo.annotations.Version;
 import javax.jdo.annotations.VersionStrategy;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import domainapp.modules.simple.dom.jugador.Jugador;
-import domainapp.modules.simple.dom.partido.types.Estados;
-
-import domainapp.modules.simple.dom.partido.types.Horarios;
-import domainapp.modules.simple.dom.partido.types.NumeroCancha;
-
-
-
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainObject;
@@ -56,6 +48,10 @@ import lombok.ToString;
 import lombok.val;
 
 import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.jugador.Jugador;
+import domainapp.modules.simple.dom.partido.types.Estados;
+import domainapp.modules.simple.dom.partido.types.Horarios;
+import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 
 
 @PersistenceCapable(
@@ -110,7 +106,7 @@ public class Partido implements Comparable<Partido> {
 
     static final String NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE = "Partido.findByEstados";
 
-    public static Partido crearTurno(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Jugador representante, final double precio) {
+    public static Partido crearTurno(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Jugador representante, final Double precio) {
         val partido = new Partido();
             partido.setDia(dia);
             partido.setHorario(horario);
@@ -128,7 +124,7 @@ public class Partido implements Comparable<Partido> {
             partido.setNumeroCancha(numeroCancha);
             partido.setRepresentante(representante);
             partido.setEstados(Estados.ESPERA);
-            partido.setPrecio(0);
+            partido.setPrecio((double) 0);
             return partido;
     }
 
@@ -137,13 +133,7 @@ public class Partido implements Comparable<Partido> {
     @Inject @NotPersistent TitleService titleService;
     @Inject @NotPersistent MessageService messageService;
 
-    public String iconName() {
-        return this.getEstados().name().toLowerCase();
-    }
 
-
-
-    //VER IC0NMANE
 
     @Title
     @Getter @Setter @ToString.Include
@@ -163,7 +153,7 @@ public class Partido implements Comparable<Partido> {
     @Property(editing = Editing.ENABLED)
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
-    private double precio;
+    private Double precio;
 
     @Title
     @Getter @Setter
@@ -237,15 +227,5 @@ public class Partido implements Comparable<Partido> {
         return comparator.compare(this, other);
     }
 
-//    @PdfJsViewer
-//    @Getter @Setter
-//    @Persistent(defaultFetchGroup = "false", columns = {
-//            @Column(name = "attachment_name"),
-//            @Column(name = "attachment_mimetype"),
-//            @Column(name = "attachment_bytes")
-//    })
-//    @Property()
-//    @PropertyLayout(fieldSetId = "content", sequence = "1")
-//    private Blob attachment;
 
 }

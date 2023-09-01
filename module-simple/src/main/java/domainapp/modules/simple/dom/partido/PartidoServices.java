@@ -7,15 +7,6 @@ import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
-import javax.jdo.annotations.NotPersistent;
-
-import domainapp.modules.simple.dom.jugador.Jugador;
-import domainapp.modules.simple.dom.jugador.JugadorServices;
-import domainapp.modules.simple.dom.partido.types.Estados;
-import domainapp.modules.simple.dom.partido.types.Horarios;
-import domainapp.modules.simple.dom.partido.types.NumeroCancha;
-
-import domainapp.modules.simple.dom.so.SimpleObject;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -33,6 +24,12 @@ import org.apache.causeway.persistence.jdo.applib.services.JdoSupportService;
 import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.jugador.Jugador;
+import domainapp.modules.simple.dom.jugador.JugadorServices;
+import domainapp.modules.simple.dom.partido.types.Estados;
+import domainapp.modules.simple.dom.partido.types.Horarios;
+import domainapp.modules.simple.dom.partido.types.NumeroCancha;
+import domainapp.modules.simple.dom.so.SimpleObject;
 
 
 @Named(SimpleModule.NAMESPACE + ".PartidoServices")
@@ -52,7 +49,7 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
-    public Partido crearPartido(final Horarios horario, final LocalDate dia, final String telefono, final double precio) {
+    public Partido crearPartido(final Horarios horario, final LocalDate dia, final String telefono, final Double precio) {
         NumeroCancha numeroCancha = definirCancha(dia, horario);
         Jugador representante = jugadorServices.buscarJugador(telefono);
         return repositoryService.persist(Partido.crearTurno(horario, dia, numeroCancha, representante, precio));

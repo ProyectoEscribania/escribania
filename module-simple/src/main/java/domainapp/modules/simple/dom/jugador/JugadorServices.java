@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
-
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
@@ -54,13 +53,7 @@ public class JugadorServices {
                 .orElse(null);
     }
 
-//    public List<Jugador> findByPartido(Partido partido){
-//        return partido.getJugadores();
-//    }
-//    public Partido verPartido(){
-//        Jugador representante = buscarJugador();
-//        return partidoServices.buscarPartidoXRepresentante(representante);
-//    }
+
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa ="fa-list ")
     public List<Jugador> verJugadores() {

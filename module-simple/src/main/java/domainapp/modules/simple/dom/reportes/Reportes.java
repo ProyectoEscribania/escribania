@@ -53,8 +53,6 @@ public class Reportes {
 
         String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\JugadoresReporte.jrxml";
 
-        JasperReport jugadorCompilado = JasperCompileManager.compileReport(path);
-
         List<Jugador> data = jugadorServices.verJugadores();
 
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
@@ -68,8 +66,6 @@ public class Reportes {
     public Blob generarReportePartidosPDF() throws JRException {
 
         String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
-
-        JasperReport partidoCompilado = JasperCompileManager.compileReport(path);
 
         List<Partido> partidos = partidoServices.verPartidos();
 
@@ -99,14 +95,12 @@ public class Reportes {
 
         String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
-        JasperReport partidoCompilado = JasperCompileManager.compileReport(path);
-
         List<Partido> partidos = partidoServices.verPartidos();
 
         List<PartidosReporte> data = new ArrayList<>();
 
         for (Partido partido : partidos) {
-            if (partido.getEstados().equals(partido.getEstados().equals(estados))) {
+            if (partido.getEstados().equals(estados)) {
                 String representante = partido.getRepresentante() == null ? "Sin Representante" : partido.getRepresentante().getTelefono().toString();
                 PartidosReporte partidosReporte1 = new PartidosReporte();
                 partidosReporte1.setHorario(partido.getHorario().toString());
@@ -121,7 +115,7 @@ public class Reportes {
 
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
 
-        return compilacionYCarga(path, ds,"PartidosPorEstado");
+        return compilacionYCarga(path, ds,"Partidos Por Estado");
 
     }
 
@@ -132,15 +126,13 @@ public class Reportes {
 
         String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
-        JasperReport partidoCompilado = JasperCompileManager.compileReport(path);
-
         List<Partido> partidos = partidoServices.verPartidos();
 
         List<PartidosReporte> data = new ArrayList<>();
 
         for (Partido partido : partidos) {
             if (partido.getRepresentante() != null) {
-                if (partido.getEstados().equals(partido.getRepresentante().getTelefono().equals(telefono))) {
+                if (partido.getRepresentante().getTelefono().equals(telefono)) {
                     String representante = partido.getRepresentante() == null ? "Sin Representante" : partido.getRepresentante().getTelefono().toString();
                     PartidosReporte partidosReporte1 = new PartidosReporte();
                     partidosReporte1.setHorario(partido.getHorario().toString());
@@ -157,7 +149,7 @@ public class Reportes {
 
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
 
-        return compilacionYCarga(path, ds,"PartidosPorJugador");
+        return compilacionYCarga(path, ds,"Partidos Por Jugador "+telefono);
     }
 
     public Blob compilacionYCarga(String path,JRBeanCollectionDataSource ds,String nombre) throws JRException {

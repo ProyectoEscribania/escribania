@@ -1,12 +1,17 @@
 package domainapp.modules.simple.dom.reportes;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import net.sf.jasperreports.engine.design.JasperDesign;
+
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -41,17 +46,20 @@ public class Reportes {
     @Inject PartidoServices partidoServices;
 
 
+
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Blob generarReporteJugadorPDF() throws JRException {
 
         String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\JugadoresReporte.jrxml";
 
+        JasperReport jugadorCompilado = JasperCompileManager.compileReport(path);
+
         List<Jugador> data = jugadorServices.verJugadores();
 
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
 
-        return compilacionYCarga(path, null, ds);
+        return compilacionYCarga(path, ds,"Jugador");
 
     }
 
@@ -61,21 +69,27 @@ public class Reportes {
 
         String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
-        List<Partido> data = partidoServices.verPartidos();
+        JasperReport partidoCompilado = JasperCompileManager.compileReport(path);
 
-        Map<String, Object> parameters = new HashMap<>();
+        List<Partido> partidos = partidoServices.verPartidos();
 
-        for (Partido partido : data) {
+        List<PartidosReporte> data = new ArrayList<>();
+
+        for (Partido partido : partidos) {
             String representante = partido.getRepresentante() == null ? "Sin Representante" : partido.getRepresentante().getTelefono().toString();
-            parameters.put("dia", partido.getDia().toString());
-            parameters.put("horario", partido.getHorario().toString());
-            parameters.put("numeroCancha", partido.getNumeroCancha().toString());
-            parameters.put("precio", partido.getPrecio());
-            parameters.put("estados", partido.getEstados().toString());
-            parameters.put("telefono", representante);
+            PartidosReporte partidosReporte1 = new PartidosReporte();
+            partidosReporte1.setHorario(partido.getHorario().toString());
+            partidosReporte1.setDia(partido.getDia().toString());
+            partidosReporte1.setNumeroCancha(partido.getNumeroCancha().toString());
+            partidosReporte1.setPrecio(partido.getPrecio());
+            partidosReporte1.setTelefono(representante);
+            partidosReporte1.setEstados(partido.getEstados().toString());
+            data.add(partidosReporte1);
         }
 
-        return compilacionYCarga(path, parameters, null);
+        JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
+
+        return compilacionYCarga(path, ds,"Partido");
 
     }
 
@@ -85,23 +99,29 @@ public class Reportes {
 
         String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
-        List<Partido> data = partidoServices.verPartidos();
+        JasperReport partidoCompilado = JasperCompileManager.compileReport(path);
 
-        Map<String, Object> parameters = new HashMap<>();
+        List<Partido> partidos = partidoServices.verPartidos();
 
-        for (Partido partido : data) {
+        List<PartidosReporte> data = new ArrayList<>();
+
+        for (Partido partido : partidos) {
             if (partido.getEstados().equals(partido.getEstados().equals(estados))) {
                 String representante = partido.getRepresentante() == null ? "Sin Representante" : partido.getRepresentante().getTelefono().toString();
-                parameters.put("dia", partido.getDia().toString());
-                parameters.put("horario", partido.getHorario().toString());
-                parameters.put("numeroCancha", partido.getNumeroCancha().toString());
-                parameters.put("precio", partido.getPrecio());
-                parameters.put("estados", partido.getEstados().toString());
-                parameters.put("telefono", representante);
+                PartidosReporte partidosReporte1 = new PartidosReporte();
+                partidosReporte1.setHorario(partido.getHorario().toString());
+                partidosReporte1.setDia(partido.getDia().toString());
+                partidosReporte1.setNumeroCancha(partido.getNumeroCancha().toString());
+                partidosReporte1.setPrecio(partido.getPrecio());
+                partidosReporte1.setTelefono(representante);
+                partidosReporte1.setEstados(partido.getEstados().toString());
+                data.add(partidosReporte1);
             }
         }
 
-        return compilacionYCarga(path, parameters, null);
+        JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
+
+        return compilacionYCarga(path, ds,"PartidosPorEstado");
 
     }
 
@@ -112,37 +132,46 @@ public class Reportes {
 
         String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
-        List<Partido> data = partidoServices.verPartidos();
+        JasperReport partidoCompilado = JasperCompileManager.compileReport(path);
 
-        Map<String, Object> parameters = new HashMap<>();
+        List<Partido> partidos = partidoServices.verPartidos();
 
-        for (Partido partido : data) {
+        List<PartidosReporte> data = new ArrayList<>();
+
+        for (Partido partido : partidos) {
             if (partido.getRepresentante() != null) {
                 if (partido.getEstados().equals(partido.getRepresentante().getTelefono().equals(telefono))) {
                     String representante = partido.getRepresentante() == null ? "Sin Representante" : partido.getRepresentante().getTelefono().toString();
-                    parameters.put("dia", partido.getDia().toString());
-                    parameters.put("horario", partido.getHorario().toString());
-                    parameters.put("numeroCancha", partido.getNumeroCancha().toString());
-                    parameters.put("precio", partido.getPrecio());
-                    parameters.put("estados", partido.getEstados().toString());
-                    parameters.put("telefono", representante);
+                    PartidosReporte partidosReporte1 = new PartidosReporte();
+                    partidosReporte1.setHorario(partido.getHorario().toString());
+                    partidosReporte1.setDia(partido.getDia().toString());
+                    partidosReporte1.setNumeroCancha(partido.getNumeroCancha().toString());
+                    partidosReporte1.setPrecio(partido.getPrecio());
+                    partidosReporte1.setTelefono(representante);
+                    partidosReporte1.setEstados(partido.getEstados().toString());
+                    data.add(partidosReporte1);
                 }
             }
 
         }
 
-        return compilacionYCarga(path, parameters, null);
+        JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
+
+        return compilacionYCarga(path, ds,"PartidosPorJugador");
     }
 
-    public Blob compilacionYCarga(String path, Map<String, Object> parameters, JRBeanCollectionDataSource ds) throws JRException {
+    public Blob compilacionYCarga(String path,JRBeanCollectionDataSource ds,String nombre) throws JRException {
 
-        JasperReport reporteCompilado = JasperCompileManager.compileReport(path);
 
-        JasperPrint JasperPrint = parameters == null ? JasperFillManager.fillReport(reporteCompilado, null, ds) : JasperFillManager.fillReport(reporteCompilado, parameters);
+        JasperDesign jasperDesign = JRXmlLoader.load(path);
+        JasperReport archivoCompilado = JasperCompileManager.compileReport(jasperDesign);
+
+
+        JasperPrint JasperPrint = JasperFillManager.fillReport(archivoCompilado, null, ds);
 
 
         byte[] reportBytes = JasperExportManager.exportReportToPdf(JasperPrint);
-        return new Blob("Reporte.pdf", "application/pdf", reportBytes);
+        return new Blob("Reporte "+nombre+ ".pdf", "application/pdf", reportBytes);
     }
 
 }

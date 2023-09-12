@@ -43,3 +43,4 @@ translations.pot
 .flattened-pom.xml
 
 create-db-schema.sql
+/ejecutar.sh

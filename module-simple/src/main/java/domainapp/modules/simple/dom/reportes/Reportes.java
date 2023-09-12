@@ -1,6 +1,8 @@
 package domainapp.modules.simple.dom.reportes;
 
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,13 +53,12 @@ public class Reportes {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Blob generarReporteJugadorPDF() throws JRException {
 
-        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\JugadoresReporte.jrxml";
 
         List<Jugador> data = jugadorServices.verJugadores();
 
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
 
-        return compilacionYCarga(path, ds,"Jugador");
+        return compilacionYCarga("JugadoresReporte.jrxml", ds, "Jugador");
 
     }
 
@@ -65,7 +66,6 @@ public class Reportes {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Blob generarReportePartidosPDF() throws JRException {
 
-        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
         List<Partido> partidos = partidoServices.verPartidos();
 
@@ -85,7 +85,7 @@ public class Reportes {
 
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
 
-        return compilacionYCarga(path, ds,"Partido");
+        return compilacionYCarga("PartidosReporte.jrxml", ds, "Partido");
 
     }
 
@@ -93,7 +93,6 @@ public class Reportes {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Blob generarReportePartidosPorEstadoPDF(Estados estados) throws JRException {
 
-        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
         List<Partido> partidos = partidoServices.verPartidos();
 
@@ -115,7 +114,7 @@ public class Reportes {
 
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
 
-        return compilacionYCarga(path, ds,"Partidos Por Estado");
+        return compilacionYCarga("PartidosReporte.jrxml", ds, "Partidos Por Estado");
 
     }
 
@@ -124,7 +123,6 @@ public class Reportes {
     public Blob generarReportePartidosPorJugadorPDF(String telefono) throws JRException {
 
 
-        String path = "C:\\Users\\lucak\\IdeaProjects\\CanchaApp\\module-simple\\src\\main\\java\\domainapp\\modules\\simple\\dom\\reportes\\PartidosReporte.jrxml";
 
         List<Partido> partidos = partidoServices.verPartidos();
 
@@ -149,13 +147,14 @@ public class Reportes {
 
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
 
-        return compilacionYCarga(path, ds,"Partidos Por Jugador "+telefono);
+        return compilacionYCarga("PartidosReporte.jrxml", ds, "Partidos Por Jugador " + telefono);
     }
 
-    public Blob compilacionYCarga(String path,JRBeanCollectionDataSource ds,String nombre) throws JRException {
+    public Blob compilacionYCarga( String archivoDesing, JRBeanCollectionDataSource ds, String nombre) throws JRException {
 
 
-        JasperDesign jasperDesign = JRXmlLoader.load(path);
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(archivoDesing);
+        JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
         JasperReport archivoCompilado = JasperCompileManager.compileReport(jasperDesign);
 
 
@@ -163,7 +162,7 @@ public class Reportes {
 
 
         byte[] reportBytes = JasperExportManager.exportReportToPdf(JasperPrint);
-        return new Blob("Reporte "+nombre+ ".pdf", "application/pdf", reportBytes);
+        return new Blob("Reporte " + nombre + ".pdf", "application/pdf", reportBytes);
     }
 
 }

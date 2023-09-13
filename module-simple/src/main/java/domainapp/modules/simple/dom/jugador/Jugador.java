@@ -1,6 +1,7 @@
 package domainapp.modules.simple.dom.jugador;
 
 import java.util.Comparator;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,6 +16,8 @@ import javax.jdo.annotations.Unique;
 import javax.jdo.annotations.Version;
 import javax.jdo.annotations.VersionStrategy;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import domainapp.modules.simple.dom.solicitud.Solicitud;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -115,10 +118,11 @@ public class Jugador implements Comparable<Jugador> {
             fieldSetId = LayoutConstants.FieldSetId.IDENTITY,
             position = ActionLayout.Position.PANEL,
             describedAs = "Deletes this object from the persistent datastore")
-    public void delete() {
+    public List<Jugador> delete() {
         final String title = titleService.titleOf(this);
         messageService.informUser(String.format("'%s' deleted", title));
         repositoryService.removeAndFlush(this);
+        return repositoryService.allInstances(Jugador.class);
     }
 
     private final static Comparator<Jugador> comparator =

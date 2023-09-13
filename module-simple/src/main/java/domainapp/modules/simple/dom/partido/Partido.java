@@ -99,11 +99,9 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 @ToString(onlyExplicitlyIncluded = true)
 public class Partido implements Comparable<Partido> {
 
-
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
     static final String NAMED_QUERY__FIND_BY_ESTADO = "Partido.findByEstado";
     static final String NAMED_QUERY__FIND_BY_REPRESENTANTE = "Partido.findByRepresentante";
-
     static final String NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE = "Partido.findByEstados";
 
     public static Partido crearTurno(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Jugador representante, final Double precio) {
@@ -128,11 +126,9 @@ public class Partido implements Comparable<Partido> {
             return partido;
     }
 
-
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent TitleService titleService;
     @Inject @NotPersistent MessageService messageService;
-
 
 
     @Title
@@ -197,16 +193,12 @@ public class Partido implements Comparable<Partido> {
         setEstados(Estados.CONFIRMADO);
         return this;
     }
-
     @Action(semantics = IDEMPOTENT_ARE_YOU_SURE, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
     @ActionLayout(position = ActionLayout.Position.PANEL)
     public Partido rechazar() {
         setEstados(Estados.RECHAZADO);
         return this;
     }
-
-
-
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(
             fieldSetId = LayoutConstants.FieldSetId.IDENTITY,
@@ -218,14 +210,10 @@ public class Partido implements Comparable<Partido> {
         repositoryService.removeAndFlush(this);
         return repositoryService.allInstances(Partido.class);
     }
-
     private final static Comparator<Partido> comparator =
             Comparator.comparing(Partido::getHorario);
-
     @Override
     public int compareTo(final Partido other) {
         return comparator.compare(this, other);
     }
-
-
 }

@@ -1,5 +1,7 @@
 package domainapp.modules.simple.dom.jugador;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 import javax.annotation.Priority;
@@ -39,8 +41,8 @@ public class JugadorServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
     public Jugador crearJugador(
-            final String nombre,final String apellido,final String telefono,final String mail,final String password) {
-        return repositoryService.persist(Jugador.crearJugador(nombre,apellido,telefono,mail,password));
+            final String nombre, final String apellido, final String telefono, final String mail, final String password, final LocalDate fechaDeNacimiento) {
+        return repositoryService.persist(Jugador.crearJugador(nombre,apellido,telefono,mail,password,fechaDeNacimiento));
     }
 
     @Action(semantics = SemanticsOf.SAFE)
@@ -53,6 +55,14 @@ public class JugadorServices {
                 .orElse(null);
     }
 
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-search")
+    public int getEdad(String telefono){
+        Jugador jugador = buscarJugador(telefono);
+        LocalDate fechaNacimiento = jugador.getFechaNacimiento();
+         int edad = Period.between(fechaNacimiento, LocalDate.now()).getYears();
+         return edad;
+    }
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa ="fa-list ")

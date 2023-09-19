@@ -1,8 +1,12 @@
 package domainapp.modules.simple.dom.jugador;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Local;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.DatastoreIdentity;
@@ -23,6 +27,7 @@ import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainObject;
 import org.apache.causeway.applib.annotation.DomainObjectLayout;
+import org.apache.causeway.applib.annotation.Optionality;
 import org.apache.causeway.applib.annotation.Property;
 import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
@@ -73,13 +78,14 @@ public class Jugador implements Comparable<Jugador> {
 
     static final String NAMED_QUERY__FIND_BY_TEL = "Jugador.findByTel";
 
-    public static Jugador crearJugador(final String nombre, final String apellido, final String telefono, final String mail, final String password) {
+    public static Jugador crearJugador(final String nombre, final String apellido, final String telefono, final String mail, final String password, final LocalDate fechaDeNacimiento) {
         val jugador = new Jugador();
         jugador.setNombre(nombre);
         jugador.setApellido(apellido);
         jugador.setTelefono(telefono);
         jugador.setMail(mail);
         jugador.setPassword(password);
+        jugador.setFechaNacimiento(fechaDeNacimiento);
         return jugador;
     }
 
@@ -109,6 +115,14 @@ public class Jugador implements Comparable<Jugador> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
     @Getter @Setter
     private String password;
+
+    @Property(optionality = Optionality.OPTIONAL)
+    @Getter@Setter
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "7")
+    private LocalDate fechaNacimiento;
+
+
+
 
 
     static final String PROHIBITED_CHARACTERS = "&%$!";

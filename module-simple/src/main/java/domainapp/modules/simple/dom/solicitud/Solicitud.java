@@ -3,9 +3,6 @@ package domainapp.modules.simple.dom.solicitud;
 import domainapp.modules.simple.SimpleModule;
 
 import domainapp.modules.simple.dom.jugador.Jugador;
-import domainapp.modules.simple.dom.jugador.JugadorServices;
-import domainapp.modules.simple.dom.partido.Partido;
-import domainapp.modules.simple.dom.partido.PartidoServices;
 import domainapp.modules.simple.dom.partido.types.Estados;
 import domainapp.modules.simple.dom.partido.types.Horarios;
 import domainapp.modules.simple.dom.partido.types.NumeroCancha;
@@ -88,14 +85,13 @@ public class Solicitud {
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Solicitud.findByNameExact";
 
-    public static Solicitud crearSolicitud(final LocalDate dia,final  Horarios horario,final  NumeroCancha numeroCancha,final  Double precio,final  Estados estado,final Jugador representante,final  List<Jugador> jugadores) {
+    public static Solicitud crearSolicitud(final LocalDate dia,final  Horarios horario,final  NumeroCancha numeroCancha,final  Double precio,final  Estados estado,final  List<Jugador> jugadores) {
         val solicitud = new Solicitud();
         solicitud.setDia(dia);
         solicitud.setHorario(horario);
         solicitud.setNumeroCancha(numeroCancha);
         solicitud.setPrecio(precio);
         solicitud.setEstados(estado);
-        solicitud.setRepresentante(representante);
         solicitud.setJugadores(jugadores);
         return solicitud;
     }
@@ -129,11 +125,6 @@ public class Solicitud {
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
     private Estados estados;
-
-    @Property(optionality = Optionality.OPTIONAL)
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
-    @Getter @Setter
-    private Jugador representante;
 
     private int numMaxJugadores = 8;
     private Double habilidadPromedio;

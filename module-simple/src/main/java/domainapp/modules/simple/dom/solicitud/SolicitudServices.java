@@ -56,16 +56,17 @@ public class SolicitudServices {
 
         Jugador jugador = jugadorServices.buscarJugador(telefono);
 
-        Solicitud solicitud = haySolicitud(horario, dia, numeroCancha,precio,jugador);
-        solicitud.getJugadores().add(0, jugador);
+        Solicitud solicitud = haySolicitud(horario, dia, numeroCancha,precio);
+        solicitud.getJugadores().add(jugador);
 
-        if (solicitud.getJugadores().size() > 7) {partidoServices.crearPartido(horario, dia, solicitud.getRepresentante().getTelefono(), precio);}
-
+        if (solicitud.getJugadores().size() > 7) {
+            partidoServices.crearPartido(horario, dia, solicitud.getJugadores().get(0).getTelefono(), precio);
+        }
         return repositoryService.persist(solicitud);
     }
 
 
-    public Solicitud haySolicitud(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha,final Double precio, final Jugador jugador) {
+    public Solicitud haySolicitud(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha,final Double precio) {
         List<Jugador> jugadores = new ArrayList<>();
         return repositoryService.uniqueMatch(
                 Query.named(Solicitud.class, Solicitud.NAMED_QUERY__FIND_BY_NAME_EXACT)
@@ -73,7 +74,7 @@ public class SolicitudServices {
                         .withParameter("dia", dia)
                         .withParameter("numeroCancha", numeroCancha)
         ).orElse(
-                Solicitud.crearSolicitud(dia, horario, numeroCancha, precio, Estados.MATCHMAKING, jugador, jugadores)
+                Solicitud.crearSolicitud(dia, horario, numeroCancha, precio, Estados.MATCHMAKING, jugadores)
         );
     }
 

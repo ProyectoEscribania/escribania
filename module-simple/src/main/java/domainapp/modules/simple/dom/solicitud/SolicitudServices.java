@@ -47,26 +47,39 @@ public class SolicitudServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Solicitud crearSolicitud(final LocalDate dia, final Horarios horario, final String telefono) {
+    public Solicitud crearSolicitud(final LocalDate dia, final String telefono) {
 
-        NumeroCancha numeroCancha = partidoServices.definirCancha(dia, horario);
+
 
         //Precio de la canchaaaa
         Double precio = 20000.0;
 
+        List<Horarios> horariosRestringidos = horariosRestringidos(dia);
+
+
+        Horarios horario = seleccionHorario(horariosRestringidos);
+
+
         Jugador jugador = jugadorServices.buscarJugador(telefono);
 
-        Solicitud solicitud = haySolicitud(horario, dia, numeroCancha,precio);
+        NumeroCancha numeroCancha = partidoServices.definirCancha(dia, horario);
+
+        Solicitud solicitud = haySolicitud(horario, dia, numeroCancha, precio);
         solicitud.getJugadores().add(jugador);
 
-        if (solicitud.getJugadores().size() > 7) {
+
+        //Incrementar Jugadores despues de testear
+        if (solicitud.getJugadores().size() > 2) {
             partidoServices.crearPartido(horario, dia, solicitud.getJugadores().get(0).getTelefono(), precio);
+            repositoryService.removeAndFlush(solicitud);
+            return null;
+        } else {
+            return repositoryService.persist(solicitud);
         }
-        return repositoryService.persist(solicitud);
     }
 
 
-    public Solicitud haySolicitud(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha,final Double precio) {
+    public Solicitud haySolicitud(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Double precio) {
         List<Jugador> jugadores = new ArrayList<>();
         return repositoryService.uniqueMatch(
                 Query.named(Solicitud.class, Solicitud.NAMED_QUERY__FIND_BY_NAME_EXACT)
@@ -80,11 +93,32 @@ public class SolicitudServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public  List<Solicitud> verSolicitudes(){return repositoryService.allInstances(Solicitud.class);}
+    public List<Solicitud> verSolicitudes() {
+        return repositoryService.allInstances(Solicitud.class);
+    }
 
 
+    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    public List<Horarios> horariosRestringidos(LocalDate dia) {
+
+        List<Horarios> horariosRestringidos = new ArrayList<>();
+
+        for (Horarios hora : Horarios.values()) {
+            if (partidoServices.buscarPartido(hora, dia, NumeroCancha.Tres) == null) {
+                horariosRestringidos.add(hora);
+            }
+        }
+            return horariosRestringidos;
+    }
 
 
+    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    public Horarios seleccionHorario(List<Horarios> hora){
+        return hora.get(0);
+    }
 
 
 }
+

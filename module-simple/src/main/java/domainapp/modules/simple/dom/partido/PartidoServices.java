@@ -58,6 +58,7 @@ public class PartidoServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
     public Partido sacarTurno(final Horarios horario, final LocalDate dia, final String telefono) {
+
         Jugador representante = jugadorServices.buscarJugador(telefono);
 
         if (representante == null) {

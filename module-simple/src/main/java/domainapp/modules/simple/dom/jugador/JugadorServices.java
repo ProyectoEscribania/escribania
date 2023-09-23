@@ -34,8 +34,9 @@ public class JugadorServices {
 
     @Inject @NotPersistent RepositoryService repositoryService;
 
+
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Jugador crearJugador(
             final String nombre, final String apellido, final String telefono, final String mail, final String password, final LocalDate fechaDeNacimiento) {
         return repositoryService.persist(Jugador.crearJugador(nombre,apellido,telefono,mail,password,fechaDeNacimiento));

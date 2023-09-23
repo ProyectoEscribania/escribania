@@ -1,12 +1,8 @@
-package domainapp.modules.simple.dom.jugador;
+package domainapp.modules.simple.dom.equipo;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Comparator;
-import java.util.Date;
+
 import java.util.List;
 
-import javax.ejb.Local;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.DatastoreIdentity;
@@ -17,113 +13,107 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 import javax.jdo.annotations.Unique;
-import javax.jdo.annotations.Version;
-import javax.jdo.annotations.VersionStrategy;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import domainapp.modules.simple.dom.solicitud.Solicitud;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainObject;
-import org.apache.causeway.applib.annotation.DomainObjectLayout;
+import org.apache.causeway.applib.annotation.Editing;
 import org.apache.causeway.applib.annotation.Optionality;
 import org.apache.causeway.applib.annotation.Property;
 import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
-import org.apache.causeway.applib.annotation.TableDecorator;
 import org.apache.causeway.applib.annotation.Title;
-import org.apache.causeway.applib.jaxb.PersistentEntityAdapter;
 import org.apache.causeway.applib.layout.LayoutConstants;
 import org.apache.causeway.applib.services.message.MessageService;
 import org.apache.causeway.applib.services.repository.RepositoryService;
 import org.apache.causeway.applib.services.title.TitleService;
 
+import static org.apache.causeway.applib.annotation.SemanticsOf.IDEMPOTENT_ARE_YOU_SURE;
+import static org.apache.causeway.applib.annotation.SemanticsOf.NON_IDEMPOTENT;
 import static org.apache.causeway.applib.annotation.SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.val;
 
 import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.jugador.Jugador;
+import domainapp.modules.simple.dom.jugador.JugadorServices;
 
 
 @PersistenceCapable(
         schema = SimpleModule.SCHEMA,
         identityType = IdentityType.DATASTORE)
 @Unique(
-        name = "Jugador__telefono__UNQ", members = {"telefono"}
+        name = "Equipo__nombre__UNQ", members = {"nombre"}
 )
 @Queries({
 
         @Query(
-                name = Jugador.NAMED_QUERY__FIND_BY_TEL,
+                name = Equipo.NAMED_QUERY__FIND_BY_REPRESENTANTE,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.jugador.Jugador " +
-                        "WHERE telefono == :telefono"
-        )
+                        "FROM domainapp.modules.simple.dom.equipo.Equipo " +
+                        "WHERE representante == :representante"
+
+        ),
+
 })
 @DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
-@Named(SimpleModule.NAMESPACE + ".Jugador")
+@Named(SimpleModule.NAMESPACE + ".Equipo")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
-public class Jugador{
+public class Equipo {
 
-    static final String NAMED_QUERY__FIND_BY_TEL = "Jugador.findByTel";
-    @Inject @NotPersistent RepositoryService repositoryService;
+
+    static final String NAMED_QUERY__FIND_BY_REPRESENTANTE = "Equipo.findByRepresentante";
     @Inject @NotPersistent TitleService titleService;
     @Inject @NotPersistent MessageService messageService;
+    @Inject @NotPersistent RepositoryService repositoryService;
+    @Inject @NotPersistent JugadorServices jugadorServices;
 
-    public static Jugador crearJugador(final String nombre, final String apellido, final String telefono, final String mail, final String password, final LocalDate fechaDeNacimiento) {
-        val jugador = new Jugador();
-        jugador.setNombre(nombre);
-        jugador.setApellido(apellido);
-        jugador.setTelefono(telefono);
-        jugador.setMail(mail);
-        jugador.setPassword(password);
-        jugador.setFechaNacimiento(fechaDeNacimiento);
-        return jugador;
+    public static Equipo crearEquipo(final String nombreDelEquipo, final Jugador representante, final Double edadPromedio, final List<Jugador> jugadores) {
+        val equipo = new Equipo();
+        equipo.setNombre(nombreDelEquipo);
+        equipo.setRepresentante(representante);
+        equipo.setEdadPromedio(edadPromedio);
+        equipo.setJugadoresEquipo(jugadores);
+        return equipo;
     }
 
-
-
     @Title
-    @Getter @Setter @ToString.Include
+    @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.IDENTITY, sequence = "1")
     private String nombre;
 
-    @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
-    private String apellido;
-
-    @Getter @Setter
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
-    private String telefono;
-
-    @Getter @Setter
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
-    private String mail;
-
-    @Getter @Setter
-    private String password;
-
-    @Property(optionality = Optionality.OPTIONAL)
     @Getter@Setter
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "7")
-    private LocalDate fechaNacimiento;
+    private Jugador representante;
 
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
+    @Getter @Setter
+    private Double edadPromedio;
+
+    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
+    @Getter @Setter
+    private List<Jugador> jugadoresEquipo;
 
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(
             fieldSetId = LayoutConstants.FieldSetId.IDENTITY,
-            position = ActionLayout.Position.PANEL)
-    public List<Jugador> eliminarJugador() {
+            position = ActionLayout.Position.PANEL
+    )
+    public List<Equipo> eliminarEquipo() {
         final String title = titleService.titleOf(this);
         messageService.informUser(String.format("'%s' deleted", title));
         repositoryService.removeAndFlush(this);
-        return repositoryService.allInstances(Jugador.class);
+        return repositoryService.allInstances(Equipo.class);
+    }
+
+    @Action(semantics = NON_IDEMPOTENT)
+    @ActionLayout(position = ActionLayout.Position.PANEL)
+    public Equipo agregarJugadorAlEquipo(String telefono){
+        jugadoresEquipo.add(jugadorServices.buscarJugador(telefono));
+        return this;
     }
 
 

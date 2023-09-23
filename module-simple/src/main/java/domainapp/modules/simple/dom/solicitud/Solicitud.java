@@ -79,6 +79,9 @@ import static org.apache.causeway.applib.annotation.SemanticsOf.NON_IDEMPOTENT_A
 public class Solicitud {
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Solicitud.findByNameExact";
+    @Inject @NotPersistent RepositoryService repositoryService;
+    @Inject @NotPersistent TitleService titleService;
+    @Inject @NotPersistent MessageService messageService;
 
     public static Solicitud crearSolicitud(final LocalDate dia,final  Horarios horario,final  NumeroCancha numeroCancha,final  Double precio,final  Estados estado,final  List<Jugador> jugadores) {
         val solicitud = new Solicitud();
@@ -91,9 +94,7 @@ public class Solicitud {
         return solicitud;
     }
 
-    @Inject @NotPersistent RepositoryService repositoryService;
-    @Inject @NotPersistent TitleService titleService;
-    @Inject @NotPersistent MessageService messageService;
+
 
 
     @Title
@@ -121,11 +122,8 @@ public class Solicitud {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "5")
     private Estados estados;
 
-    private int numMaxJugadores = 8;
     private Double habilidadPromedio;
     private Double edadPromedio;
-
-    //private tiempoAntesDePartido
 
 
     @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)

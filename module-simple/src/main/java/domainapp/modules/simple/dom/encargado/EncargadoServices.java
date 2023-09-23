@@ -6,6 +6,7 @@ import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
+import javax.jdo.annotations.NotPersistent;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -25,19 +26,18 @@ import domainapp.modules.simple.SimpleModule;
 
 @Named(SimpleModule.NAMESPACE + ".EncargadoServices")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Encargado", menuBar = DomainServiceLayout.MenuBar.PRIMARY)
-@Priority(PriorityPrecedence.EARLY)
+@DomainServiceLayout(named = "Encargado")
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class EncargadoServices {
 
-    final RepositoryService repositoryService;
-    final JdoSupportService jdoSupportService;
+    @Inject @NotPersistent RepositoryService repositoryService;
+    @Inject @NotPersistent JdoSupportService jdoSupportService;
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
-    public Encargado crearEncargado(final String nombre, final String apellido, final String dni, final String localidad) {
-        return repositoryService.persist(Encargado.withName(nombre, apellido, dni, localidad));
+    public Encargado crearEncargado(final String nombre, final String apellido, final String dni) {
+        return repositoryService.persist(Encargado.withName(nombre, apellido, dni));
     }
 
 
@@ -57,13 +57,6 @@ public class EncargadoServices {
         return repositoryService.allInstances(Encargado.class);
     }
 
-    public void ping() {
-        JDOQLTypedQuery<Encargado> q = jdoSupportService.newTypesafeQuery(Encargado.class);
-        final QEncargado candidate = QEncargado.candidate();
-        q.range(0, 2);
-        q.orderBy(candidate.nombre.asc());
-        q.executeList();
 
-    }
 
 }

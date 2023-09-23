@@ -69,24 +69,18 @@ import domainapp.modules.simple.SimpleModule;
         )
 })
 @DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
-@Version(strategy = VersionStrategy.DATE_TIME, column = "version")
 @Named(SimpleModule.NAMESPACE + ".Encargado")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
-@DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@XmlJavaTypeAdapter(PersistentEntityAdapter.class)
-@ToString(onlyExplicitlyIncluded = true)
-public class Encargado implements Comparable<Encargado> {
+public class Encargado{
 
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Encargado.findByNameExact";
 
-    public static Encargado withName(final String nombre,final String apellido, final String dni, final String localidad) {
+    public static Encargado withName(final String nombre,final String apellido, final String dni) {
         val encargado = new Encargado();
         encargado.setNombre(nombre);
         encargado.setApellido(apellido);
         encargado.setDni(dni);
-        encargado.setLocalidad(localidad);
 
         return encargado;
     }
@@ -94,7 +88,6 @@ public class Encargado implements Comparable<Encargado> {
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent TitleService titleService;
     @Inject @NotPersistent MessageService messageService;
-
 
 
     @Title
@@ -110,46 +103,6 @@ public class Encargado implements Comparable<Encargado> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     private String dni;
 
-    @Getter @Setter
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
-    private String localidad;
-
-
-
-
-
-
-
-
-
-    @PdfJsViewer
-    @Getter @Setter
-    @Persistent(defaultFetchGroup="false", columns = {
-            @Column(name = "attachment_name"),
-            @Column(name = "attachment_mimetype"),
-            @Column(name = "attachment_bytes")
-    })
-    @Property()
-    @PropertyLayout(fieldSetId = "content", sequence = "6")
-    private Blob attachment;
-
-
-    static final String PROHIBITED_CHARACTERS = "&%$!";
-
-
-    @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
-    @ActionLayout(associateWith = "attachment", position = ActionLayout.Position.PANEL)
-    public Encargado updateAttachment(
-            @Nullable final Blob attachment) {
-        setAttachment(attachment);
-        return this;
-    }
-    @MemberSupport public Blob default0UpdateAttachment() {
-        return getAttachment();
-    }
-
-
-
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(
             fieldSetId = LayoutConstants.FieldSetId.IDENTITY,
@@ -162,15 +115,6 @@ public class Encargado implements Comparable<Encargado> {
         return repositoryService.allInstances(Encargado.class);
     }
 
-
-
-    private final static Comparator<Encargado> comparator =
-            Comparator.comparing(Encargado::getNombre);
-
-    @Override
-    public int compareTo(final Encargado other) {
-        return comparator.compare(this, other);
-    }
 
 }
 

@@ -36,17 +36,17 @@ public class EncargadoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
-    public Encargado crearEncargado(final String nombre, final String apellido, final String dni) {
-        return repositoryService.persist(Encargado.withName(nombre, apellido, dni));
+    public Encargado crearEncargado(final String nombre, final String apellido, final String dni, final String telefono, final String password) {
+        return repositoryService.persist(Encargado.withName(nombre, apellido, dni, telefono,password));
     }
 
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
-    public Encargado buscarEncargado(final String nombre) {
+    public Encargado buscarEncargado(final String telefono) {
         return repositoryService.firstMatch(
                         Query.named(Encargado.class, Encargado.NAMED_QUERY__FIND_BY_NAME_EXACT)
-                                .withParameter("nombre", nombre))
+                                .withParameter("telefono", telefono))
                 .orElse(null);
     }
 
@@ -57,6 +57,8 @@ public class EncargadoServices {
         return repositoryService.allInstances(Encargado.class);
     }
 
-
+    public String getPassword(final String telefono){
+        return buscarEncargado(telefono).getPassword();
+    }
 
 }

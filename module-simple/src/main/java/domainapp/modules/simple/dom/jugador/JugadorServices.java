@@ -55,6 +55,9 @@ public class JugadorServices {
          return edad;
     }
 
+    public String getPassword(final String telefono){
+       return buscarJugador(telefono).getPassword();
+    }
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa ="fa-list ")
     public List<Jugador> verJugadores() {

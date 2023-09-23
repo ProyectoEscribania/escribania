@@ -65,7 +65,7 @@ import domainapp.modules.simple.SimpleModule;
                 name = Encargado.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
                         "FROM domainapp.modules.simple.dom.encargado.Encargado " +
-                        "WHERE nombre == :nombre"
+                        "WHERE telefono == :telefono"
         )
 })
 @DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
@@ -76,11 +76,13 @@ public class Encargado{
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Encargado.findByNameExact";
 
-    public static Encargado withName(final String nombre,final String apellido, final String dni) {
+    public static Encargado withName(final String nombre,final String apellido, final String dni,final String telefono,final String password) {
         val encargado = new Encargado();
         encargado.setNombre(nombre);
         encargado.setApellido(apellido);
         encargado.setDni(dni);
+        encargado.setTelefono(telefono);
+        encargado.setPassword(password);
 
         return encargado;
     }
@@ -99,9 +101,16 @@ public class Encargado{
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
     private String apellido;
 
+    @Property
+    @Getter@Setter
+    private String password;
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     private String dni;
+
+    @Property
+    @Getter@Setter
+    private String telefono;
 
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(

@@ -1,36 +1,33 @@
-package domainapp.modules.simple.dom.solicitud;
+package domainapp.modules.simple.dom.solicitud.simple;
 
 
-import domainapp.modules.simple.SimpleModule;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-import domainapp.modules.simple.dom.jugador.Jugador;
-import domainapp.modules.simple.dom.jugador.JugadorServices;
-import domainapp.modules.simple.dom.partido.PartidoServices;
-import domainapp.modules.simple.dom.partido.types.Estados;
-import domainapp.modules.simple.dom.partido.types.Horarios;
-import domainapp.modules.simple.dom.partido.types.NumeroCancha;
-
-import lombok.RequiredArgsConstructor;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.jdo.annotations.NotPersistent;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
 import org.apache.causeway.applib.annotation.DomainServiceLayout;
 import org.apache.causeway.applib.annotation.NatureOfService;
-import org.apache.causeway.applib.annotation.PriorityPrecedence;
 import org.apache.causeway.applib.annotation.PromptStyle;
 import org.apache.causeway.applib.annotation.SemanticsOf;
 import org.apache.causeway.applib.query.Query;
 import org.apache.causeway.applib.services.repository.RepositoryService;
 
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.jdo.annotations.NotPersistent;
+import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.jugador.Jugador;
+import domainapp.modules.simple.dom.jugador.JugadorServices;
+import domainapp.modules.simple.dom.partido.PartidoServices;
+import domainapp.modules.simple.dom.partido.types.Estados;
+import domainapp.modules.simple.dom.partido.types.Horarios;
+import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 
 
 @Named(SimpleModule.NAMESPACE + ".SolicituService")
@@ -97,8 +94,6 @@ public class SolicitudServices {
     }
 
 
-    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<Horarios> horariosRestringidos(LocalDate dia) {
 
         List<Horarios> horariosRestringidos = new ArrayList<>();
@@ -112,8 +107,7 @@ public class SolicitudServices {
     }
 
 
-    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+
     public Horarios seleccionHorario(List<Horarios> hora){
         return hora.get(0);
     }

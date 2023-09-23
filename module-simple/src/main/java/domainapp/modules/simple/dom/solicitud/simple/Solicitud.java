@@ -1,36 +1,7 @@
-package domainapp.modules.simple.dom.solicitud;
+package domainapp.modules.simple.dom.solicitud.simple;
 
-import domainapp.modules.simple.SimpleModule;
-
-import domainapp.modules.simple.dom.jugador.Jugador;
-import domainapp.modules.simple.dom.partido.types.Estados;
-import domainapp.modules.simple.dom.partido.types.Horarios;
-import domainapp.modules.simple.dom.partido.types.NumeroCancha;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import lombok.val;
-
-import org.apache.causeway.applib.annotation.Action;
-import org.apache.causeway.applib.annotation.ActionLayout;
-import org.apache.causeway.applib.annotation.DomainObject;
-import org.apache.causeway.applib.annotation.DomainObjectLayout;
-import org.apache.causeway.applib.annotation.Editing;
-import org.apache.causeway.applib.annotation.Optionality;
-import org.apache.causeway.applib.annotation.Property;
-import org.apache.causeway.applib.annotation.PropertyLayout;
-import org.apache.causeway.applib.annotation.Publishing;
-import org.apache.causeway.applib.annotation.TableDecorator;
-import org.apache.causeway.applib.annotation.Title;
-import org.apache.causeway.applib.jaxb.PersistentEntityAdapter;
-import org.apache.causeway.applib.layout.LayoutConstants;
-import org.apache.causeway.applib.services.message.MessageService;
-import org.apache.causeway.applib.services.repository.RepositoryService;
-import org.apache.causeway.applib.services.title.TitleService;
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,19 +11,36 @@ import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 import javax.jdo.annotations.Unique;
-import javax.jdo.annotations.Version;
-import javax.jdo.annotations.VersionStrategy;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
+import org.apache.causeway.applib.annotation.Action;
+import org.apache.causeway.applib.annotation.ActionLayout;
+import org.apache.causeway.applib.annotation.DomainObject;
+import org.apache.causeway.applib.annotation.Editing;
+import org.apache.causeway.applib.annotation.Optionality;
+import org.apache.causeway.applib.annotation.Property;
+import org.apache.causeway.applib.annotation.PropertyLayout;
+import org.apache.causeway.applib.annotation.Publishing;
+import org.apache.causeway.applib.annotation.Title;
+import org.apache.causeway.applib.layout.LayoutConstants;
+import org.apache.causeway.applib.services.message.MessageService;
+import org.apache.causeway.applib.services.repository.RepositoryService;
+import org.apache.causeway.applib.services.title.TitleService;
 
 import static org.apache.causeway.applib.annotation.SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.val;
+
+import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.jugador.Jugador;
+import domainapp.modules.simple.dom.partido.types.Estados;
+import domainapp.modules.simple.dom.partido.types.Horarios;
+import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 
 
 @PersistenceCapable(
@@ -66,7 +54,7 @@ import static org.apache.causeway.applib.annotation.SemanticsOf.NON_IDEMPOTENT_A
         @Query(
                 name = Solicitud.NAMED_QUERY__FIND_BY_NAME_EXACT,
                 value = "SELECT " +
-                        "FROM domainapp.modules.simple.dom.solicitud.Solicitud " +
+                        "FROM domainapp.modules.simple.dom.solicitud.simple.Solicitud " +
                         "WHERE horario == :horario && dia == :dia && numeroCancha == :numeroCancha"
         )
 }

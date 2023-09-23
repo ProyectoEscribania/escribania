@@ -4,23 +4,19 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jdo.JDOQLTypedQuery;
-
 import javax.jdo.annotations.NotPersistent;
+
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
 import org.apache.causeway.applib.annotation.DomainServiceLayout;
 import org.apache.causeway.applib.annotation.NatureOfService;
-import org.apache.causeway.applib.annotation.PriorityPrecedence;
 import org.apache.causeway.applib.annotation.PromptStyle;
 import org.apache.causeway.applib.annotation.SemanticsOf;
 import org.apache.causeway.applib.query.Query;
 import org.apache.causeway.applib.services.repository.RepositoryService;
-import org.apache.causeway.persistence.jdo.applib.services.JdoSupportService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,8 +48,6 @@ public class JugadorServices {
                 .orElse(null);
     }
 
-    @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-search")
     public int getEdad(String telefono){
         Jugador jugador = buscarJugador(telefono);
         LocalDate fechaNacimiento = jugador.getFechaNacimiento();

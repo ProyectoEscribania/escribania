@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
 
+import javax.jdo.annotations.NotPersistent;
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
@@ -27,16 +28,11 @@ import domainapp.modules.simple.SimpleModule;
 
 @Named(SimpleModule.NAMESPACE + ".JugadorServices")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Jugador",menuBar = DomainServiceLayout.MenuBar.PRIMARY)
-@Priority(PriorityPrecedence.EARLY)
+@DomainServiceLayout(named = "Jugador")
 @RequiredArgsConstructor(onConstructor_ = {@Inject} )
 public class JugadorServices {
 
-    final RepositoryService repositoryService;
-    final JdoSupportService jdoSupportService;
-
-
-
+    @Inject @NotPersistent RepositoryService repositoryService;
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR,cssClassFa = "fa-plus")
@@ -70,11 +66,5 @@ public class JugadorServices {
         return repositoryService.allInstances(Jugador.class);
     }
 
-    public void ping() {
-        JDOQLTypedQuery<Jugador> q = jdoSupportService.newTypesafeQuery(Jugador.class);
-        final QJugador candidate = QJugador.candidate();
-        q.range(0,2);
-        q.orderBy(candidate.telefono.asc());
-        q.executeList();
-    }
+
 }

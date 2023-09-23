@@ -35,8 +35,7 @@ import java.util.List;
 
 @Named(SimpleModule.NAMESPACE + ".SolicituService")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Solicitud", menuBar = DomainServiceLayout.MenuBar.PRIMARY)
-@Priority(PriorityPrecedence.EARLY)
+@DomainServiceLayout(named = "Solicitud")
 @RequiredArgsConstructor(onConstructor_ = {@Inject} )
 public class SolicitudServices {
 

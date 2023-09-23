@@ -41,7 +41,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @DomainService(nature = NatureOfService.VIEW)
 @Named(SimpleModule.NAMESPACE + ".ReporteJugador")
-@DomainServiceLayout(named = "Reporte", menuBar = DomainServiceLayout.MenuBar.PRIMARY)
+@DomainServiceLayout(named = "Reporte")
 public class Reportes {
 
     @Inject JugadorServices jugadorServices;

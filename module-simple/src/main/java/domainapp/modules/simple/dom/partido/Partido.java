@@ -90,14 +90,9 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 
 })
 @DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
-@Version(strategy = VersionStrategy.DATE_TIME, column = "version")
 @Named(SimpleModule.NAMESPACE + ".Partido")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
-@DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@XmlJavaTypeAdapter(PersistentEntityAdapter.class)
-@ToString(onlyExplicitlyIncluded = true)
-public class Partido implements Comparable<Partido> {
+public class Partido{
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Partido.findByNameExact";
     static final String NAMED_QUERY__FIND_BY_ESTADO = "Partido.findByEstado";
@@ -163,24 +158,6 @@ public class Partido implements Comparable<Partido> {
     private Jugador representante;
 
 
-//    @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
-//    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
-//    @Column(allowsNull = "true")
-//    @Persistent(mappedBy = "partido", defaultFetchGroup = "true")
-//    @Getter @Setter
-//    private List<Jugador> jugadores;
-
-//    public List<Jugador> autoCompleteJugador(@MinLength(4) final String search){
-//        return jugadorServices.verJugadores();
-//    }
-//    @Action()
-//    @ActionLayout(associateWith = "jugadores", position = ActionLayout.Position.PANEL)
-//    public void añadirJugador(String telefono){
-//         this.jugadores.add(jugadorServices.buscarJugador(telefono));
-//    }
-
-    static final String PROHIBITED_CHARACTERS = "&%$!";
-
     @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)
     @ActionLayout(position = ActionLayout.Position.PANEL)
     public Partido completar() {
@@ -210,10 +187,5 @@ public class Partido implements Comparable<Partido> {
         repositoryService.removeAndFlush(this);
         return repositoryService.allInstances(Partido.class);
     }
-    private final static Comparator<Partido> comparator =
-            Comparator.comparing(Partido::getHorario);
-    @Override
-    public int compareTo(final Partido other) {
-        return comparator.compare(this, other);
-    }
+
 }

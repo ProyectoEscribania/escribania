@@ -67,14 +67,9 @@ import domainapp.modules.simple.SimpleModule;
         )
 })
 @DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
-@Version(strategy = VersionStrategy.DATE_TIME, column = "version")
 @Named(SimpleModule.NAMESPACE + ".Jugador")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
-@DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@XmlJavaTypeAdapter(PersistentEntityAdapter.class)
-@ToString(onlyExplicitlyIncluded = true)
-public class Jugador implements Comparable<Jugador> {
+public class Jugador{
 
     static final String NAMED_QUERY__FIND_BY_TEL = "Jugador.findByTel";
 
@@ -111,8 +106,6 @@ public class Jugador implements Comparable<Jugador> {
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
     private String mail;
 
-    @Property
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "6")
     @Getter @Setter
     private String password;
 
@@ -122,40 +115,16 @@ public class Jugador implements Comparable<Jugador> {
     private LocalDate fechaNacimiento;
 
 
-
-
-
-    static final String PROHIBITED_CHARACTERS = "&%$!";
-
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(
             fieldSetId = LayoutConstants.FieldSetId.IDENTITY,
-            position = ActionLayout.Position.PANEL,
-            describedAs = "Deletes this object from the persistent datastore")
-    public List<Jugador> delete() {
+            position = ActionLayout.Position.PANEL)
+    public List<Jugador> eliminarJugador() {
         final String title = titleService.titleOf(this);
         messageService.informUser(String.format("'%s' deleted", title));
         repositoryService.removeAndFlush(this);
         return repositoryService.allInstances(Jugador.class);
     }
 
-    private final static Comparator<Jugador> comparator =
-            Comparator.comparing(Jugador::getTelefono);
-
-    @Override
-    public int compareTo(final Jugador other) {
-        return comparator.compare(this, other);
-    }
-
-//    @PdfJsViewer
-//    @Getter @Setter
-//    @Persistent(defaultFetchGroup = "false", columns = {
-//            @Column(name = "attachment_name"),
-//            @Column(name = "attachment_mimetype"),
-//            @Column(name = "attachment_bytes")
-//    })
-//    @Property()
-//    @PropertyLayout(fieldSetId = "content", sequence = "1")
-//    private Blob attachment;
 
 }

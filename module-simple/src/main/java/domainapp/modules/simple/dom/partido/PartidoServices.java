@@ -7,6 +7,7 @@ import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.JDOQLTypedQuery;
+import javax.jdo.annotations.NotPersistent;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -29,20 +30,17 @@ import domainapp.modules.simple.dom.jugador.JugadorServices;
 import domainapp.modules.simple.dom.partido.types.Estados;
 import domainapp.modules.simple.dom.partido.types.Horarios;
 import domainapp.modules.simple.dom.partido.types.NumeroCancha;
-import domainapp.modules.simple.dom.so.SimpleObject;
 
 
 @Named(SimpleModule.NAMESPACE + ".PartidoServices")
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Partido", menuBar = DomainServiceLayout.MenuBar.PRIMARY)
-@Priority(PriorityPrecedence.EARLY)
+@DomainServiceLayout(named = "Partido")
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PartidoServices {
 
-    final RepositoryService repositoryService;
-    final JdoSupportService jdoSupportService;
-    final JugadorServices jugadorServices;
-    final MessageService messageService;
+    @Inject @NotPersistent RepositoryService repositoryService;
+    @Inject @NotPersistent JugadorServices jugadorServices;
+    @Inject @NotPersistent MessageService messageService;
 
 
 
@@ -112,8 +110,6 @@ public class PartidoServices {
     }
 
 
-//    @Action(semantics = SemanticsOf.SAFE)
-//    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
     public List<Partido> hayPartido(final String telefono) {
         Jugador jugador = jugadorServices.buscarJugador(telefono);
         return (repositoryService.allMatches(Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE)
@@ -129,13 +125,5 @@ public class PartidoServices {
         return numeroCancha;
     }
 
-    public void ping() {
-        JDOQLTypedQuery<SimpleObject> q = jdoSupportService.newTypesafeQuery(SimpleObject.class);
-        final QPartido candidate = QPartido.candidate();
-        q.range(0, 2);
-        q.orderBy(candidate.horario.asc());
-        q.executeList();
-
-    }
 
 }

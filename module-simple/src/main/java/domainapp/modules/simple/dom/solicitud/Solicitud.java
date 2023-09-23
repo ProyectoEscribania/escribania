@@ -74,13 +74,8 @@ import static org.apache.causeway.applib.annotation.SemanticsOf.NON_IDEMPOTENT_A
 
 
 @DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY, column="id")
-@Version(strategy = VersionStrategy.DATE_TIME, column = "version")
 @Named(SimpleModule.NAMESPACE + ".Solicitud")
 @DomainObject(entityChangePublishing = Publishing.ENABLED)
-@DomainObjectLayout(tableDecorator = TableDecorator.DatatablesNet.class)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@XmlJavaTypeAdapter(PersistentEntityAdapter.class)
-@ToString(onlyExplicitlyIncluded = true)
 public class Solicitud {
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Solicitud.findByNameExact";

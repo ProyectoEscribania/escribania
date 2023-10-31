@@ -1,11 +1,7 @@
 package domainapp.modules.simple.dom.login;
 
-import domainapp.modules.simple.SimpleModule;
-import domainapp.modules.simple.dom.encargado.EncargadoServices;
-
-import domainapp.modules.simple.dom.jugador.JugadorServices;
-
-import lombok.RequiredArgsConstructor;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -14,9 +10,11 @@ import org.apache.causeway.applib.annotation.DomainServiceLayout;
 import org.apache.causeway.applib.annotation.NatureOfService;
 import org.apache.causeway.applib.annotation.PromptStyle;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.security.auth.login.LoginException;
+import lombok.RequiredArgsConstructor;
+
+import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.encargado.EncargadoServices;
+import domainapp.modules.simple.dom.jugador.JugadorServices;
 
 @Named(SimpleModule.NAMESPACE + ".LoginJugador")
 @DomainService(nature = NatureOfService.VIEW)
@@ -29,7 +27,7 @@ public class LoginJugador {
 
     @Action
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public boolean LoginJugador(final String telefono,final String password) throws LoginException {
+    public boolean LoginJugador(final String telefono,final String password){
         if (jugadorServices.buscarJugador(telefono)!=null && jugadorServices.buscarJugador(telefono).getPassword().equals(password)){
             return true;
         }

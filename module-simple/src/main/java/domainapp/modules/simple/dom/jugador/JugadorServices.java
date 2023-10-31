@@ -34,7 +34,8 @@ public class JugadorServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Jugador crearJugador(
-            final String nombre, final String apellido, final String telefono, final String mail, final String password, final LocalDate fechaDeNacimiento) {
+            final String nombre, final String apellido, final String telefono, final String mail, final String password, final String fechaDeNacimientoString) {
+            LocalDate fechaDeNacimiento = LocalDate.parse(fechaDeNacimientoString);
         return repositoryService.persist(Jugador.crearJugador(nombre,apellido,telefono,mail,password,fechaDeNacimiento));
     }
 

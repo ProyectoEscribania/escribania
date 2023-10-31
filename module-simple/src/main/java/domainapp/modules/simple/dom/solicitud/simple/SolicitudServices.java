@@ -43,22 +43,20 @@ public class SolicitudServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Solicitud crearSolicitud(final LocalDate dia, final String telefono) {
+    public Solicitud crearSolicitud(final String diaString, final String telefono, final String horarioSting) {
 
 
+        LocalDate dia = LocalDate.parse(diaString);
+        Horarios horario = Horarios.valueOf(horarioSting);
 
         //Precio de la canchaaaa
         Double precio = 20000.0;
 
-        List<Horarios> horariosRestringidos = horariosRestringidos(dia);
-
-
-        Horarios horario = seleccionHorario(horariosRestringidos);
 
 
         Jugador jugador = jugadorServices.buscarJugador(telefono);
 
-        NumeroCancha numeroCancha = partidoServices.definirCancha(dia, horario);
+        NumeroCancha numeroCancha = partidoServices.definirCancha(diaString, horarioSting);
 
         Solicitud solicitud = haySolicitud(horario, dia, numeroCancha, precio);
         solicitud.getJugadores().add(jugador);
@@ -66,7 +64,7 @@ public class SolicitudServices {
 
         //Incrementar Jugadores despues de testear
         if (solicitud.getJugadores().size() > 2) {
-            partidoServices.crearPartido(horario, dia, solicitud.getJugadores().get(0).getTelefono(), precio);
+            partidoServices.crearPartido(horarioSting, diaString, solicitud.getJugadores().get(0).getTelefono(), precio);
             repositoryService.removeAndFlush(solicitud);
             return null;
         } else {
@@ -94,12 +92,12 @@ public class SolicitudServices {
     }
 
 
-    public List<Horarios> horariosRestringidos(LocalDate dia) {
+    public List<Horarios> horariosRestringidos(String diaString) {
 
         List<Horarios> horariosRestringidos = new ArrayList<>();
 
         for (Horarios hora : Horarios.values()) {
-            if (partidoServices.buscarPartido(hora, dia, NumeroCancha.Tres) == null) {
+            if (partidoServices.buscarPartido(String.valueOf(hora), diaString, "TRES") == null) {
                 horariosRestringidos.add(hora);
             }
         }
@@ -108,9 +106,6 @@ public class SolicitudServices {
 
 
 
-    public Horarios seleccionHorario(List<Horarios> hora){
-        return hora.get(0);
-    }
 
 
 }

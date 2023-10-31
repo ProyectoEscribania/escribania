@@ -46,16 +46,19 @@ public class SolicitudEquipoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public SolicitudEquipo crearSolicitudEquipo(final LocalDate dia, final String telefono, final Horarios horario) {
+    public SolicitudEquipo crearSolicitudEquipo(final String diaString, final String telefono, final String horarioSting) {
 
 
+
+        Horarios horario = Horarios.valueOf(horarioSting);
+        LocalDate dia = LocalDate.parse(diaString);
 
         //Precio de la canchaaaa
         Double precio = 20000.0;
 
         Jugador jugador = jugadorServices.buscarJugador(telefono);
 
-        NumeroCancha numeroCancha = partidoServices.definirCancha(dia, horario);
+        NumeroCancha numeroCancha = partidoServices.definirCancha(diaString, horarioSting);
 
         SolicitudEquipo solicitudEquipo = haySolicitud(horario, dia, numeroCancha, precio);
 
@@ -68,7 +71,7 @@ public class SolicitudEquipoServices {
 
         } else {
             solicitudEquipo.setEquipo2(equipoServices.buscarEquipo(telefono));
-            partidoServices.crearPartido(horario, dia, solicitudEquipo.getEquipo1().getRepresentante().getTelefono(), precio);
+            partidoServices.crearPartido(horarioSting, diaString, solicitudEquipo.getEquipo1().getRepresentante().getTelefono(), precio);
             repositoryService.removeAndFlush(solicitudEquipo);
             return null;
         }
@@ -96,12 +99,13 @@ public class SolicitudEquipoServices {
     }
 
 
-    public List<Horarios> horariosRestringidos(LocalDate dia) {
+    public List<Horarios> horariosRestringidos(String diaString) {
+
 
         List<Horarios> horariosRestringidos = new ArrayList<>();
 
         for (Horarios hora : Horarios.values()) {
-            if (partidoServices.buscarPartido(hora, dia, NumeroCancha.Tres) == null) {
+            if (partidoServices.buscarPartido(String.valueOf(hora), diaString, "TRES") == null) {
                 horariosRestringidos.add(hora);
             }
         }

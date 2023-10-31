@@ -43,15 +43,20 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
-    public Partido crearPartido(final Horarios horario, final LocalDate dia, final String telefono, final Double precio) {
-        NumeroCancha numeroCancha = definirCancha(dia, horario);
+    public Partido crearPartido(final String horarioSting, final String diaString, final String telefono, final Double precio) {
+        Horarios horario = Horarios.valueOf(horarioSting);
+        LocalDate dia = LocalDate.parse(diaString);
+        NumeroCancha numeroCancha = definirCancha(diaString, horarioSting);
         Jugador representante = jugadorServices.buscarJugador(telefono);
         return repositoryService.persist(Partido.crearTurno(horario, dia, numeroCancha, representante, precio));
     }
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
-    public Partido sacarTurno(final Horarios horario, final LocalDate dia, final String telefono) {
+    public Partido sacarTurno(final String horarioSting, final String diaString, final String telefono) {
+
+        Horarios horario = Horarios.valueOf(horarioSting);
+        LocalDate dia = LocalDate.parse(diaString);
 
         Jugador representante = jugadorServices.buscarJugador(telefono);
 
@@ -65,14 +70,17 @@ public class PartidoServices {
             return hayPartido(telefono).get(0);
         }
 
-        NumeroCancha numeroCancha = definirCancha(dia, horario);
+        NumeroCancha numeroCancha = definirCancha(diaString, horarioSting);
         return repositoryService.persist(Partido.pedirTurno(horario, dia, numeroCancha, representante));
     }
 
 
     @Action
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
-    public Partido buscarPartido(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha) {
+    public Partido buscarPartido(final String horarioSting, final String diaString, final String numeroCanchaSting) {
+        Horarios horario = Horarios.valueOf(horarioSting);
+        LocalDate dia = LocalDate.parse(diaString);
+        NumeroCancha numeroCancha = NumeroCancha.valueOf(numeroCanchaSting);
         return repositoryService.uniqueMatch(
                 Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
                         .withParameter("horario", horario)
@@ -99,7 +107,8 @@ public class PartidoServices {
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
-    public List<Partido> buscarPartidosPorEstados(final Estados estados) {
+    public List<Partido> buscarPartidosPorEstados(final String estadosString) {
+        Estados estados = Estados.valueOf(estadosString);
         return repositoryService.allMatches(
                 Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO)
                         .withParameter("estados", estados));
@@ -114,10 +123,10 @@ public class PartidoServices {
                 .withParameter("estados2", Estados.ESPERA)));
     }
 
-    public NumeroCancha definirCancha(final LocalDate dia, final Horarios horario) {
+    public NumeroCancha definirCancha(final String dia, final String horario) {
         NumeroCancha numeroCancha = NumeroCancha.Tres;
-        if (buscarPartido(horario, dia, NumeroCancha.Uno) == null) numeroCancha = NumeroCancha.Uno;
-        else if (buscarPartido(horario, dia, NumeroCancha.Dos) == null) numeroCancha = NumeroCancha.Dos;
+        if (buscarPartido(horario, dia, "UNO") == null) numeroCancha = NumeroCancha.Uno;
+        else if (buscarPartido(horario, dia, "DOS") == null) numeroCancha = NumeroCancha.Dos;
         return numeroCancha;
     }
 

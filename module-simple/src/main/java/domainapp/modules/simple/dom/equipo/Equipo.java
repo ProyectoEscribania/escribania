@@ -22,7 +22,6 @@ import org.apache.causeway.applib.annotation.Optionality;
 import org.apache.causeway.applib.annotation.Property;
 import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
-import org.apache.causeway.applib.annotation.Title;
 import org.apache.causeway.applib.layout.LayoutConstants;
 import org.apache.causeway.applib.services.message.MessageService;
 import org.apache.causeway.applib.services.repository.RepositoryService;
@@ -44,7 +43,7 @@ import domainapp.modules.simple.dom.jugador.JugadorServices;
         schema = SimpleModule.SCHEMA,
         identityType = IdentityType.DATASTORE)
 @Unique(
-        name = "Equipo__nombre__UNQ", members = {"nombre"}
+        name = "Equipo__representante__UNQ", members = {"representante"}
 )
 @Queries({
 
@@ -69,19 +68,15 @@ public class Equipo {
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent JugadorServices jugadorServices;
 
-    public static Equipo crearEquipo(final String nombreDelEquipo, final Jugador representante, final Double edadPromedio, final List<Jugador> jugadores) {
+    public static Equipo crearEquipo(final Jugador representante, final Double edadPromedio, final List<Jugador> jugadores) {
         val equipo = new Equipo();
-        equipo.setNombre(nombreDelEquipo);
         equipo.setRepresentante(representante);
         equipo.setEdadPromedio(edadPromedio);
         equipo.setJugadoresEquipo(jugadores);
         return equipo;
     }
 
-    @Title
-    @Getter @Setter
-    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.IDENTITY, sequence = "1")
-    private String nombre;
+
 
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
     @Getter@Setter

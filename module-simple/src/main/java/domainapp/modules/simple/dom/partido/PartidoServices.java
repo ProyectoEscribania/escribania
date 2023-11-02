@@ -60,10 +60,6 @@ public class PartidoServices {
 
         Jugador representante = jugadorServices.buscarJugador(telefono);
 
-        if (representante == null) {
-            messageService.warnUser("NO EXISTE NINGUNA CUENTA ASOCIADA A ESE NUMERO DE TELEFONO");
-            return null;
-        }
 
         if (!hayPartido(telefono).isEmpty()) {
             messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE");
@@ -124,11 +120,10 @@ public class PartidoServices {
     }
 
     public NumeroCancha definirCancha(final String dia, final String horario) {
-        NumeroCancha numeroCancha = NumeroCancha.Tres;
-        if (buscarPartido(horario, dia, "UNO") == null) numeroCancha = NumeroCancha.Uno;
-        else if (buscarPartido(horario, dia, "DOS") == null) numeroCancha = NumeroCancha.Dos;
+        NumeroCancha numeroCancha = NumeroCancha.TRES;
+        if (buscarPartido(horario, dia, "UNO") == null) numeroCancha = NumeroCancha.UNO;
+        else if (buscarPartido(horario, dia, "DOS") == null) numeroCancha = NumeroCancha.DOS;
         return numeroCancha;
     }
-
 
 }

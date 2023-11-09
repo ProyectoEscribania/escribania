@@ -37,18 +37,19 @@ public class EquipoServices {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public Equipo crearEquipo(final String telefono){
 
+        Jugador jugador = jugadorServices.buscarJugador(telefono);
+        Double edad = (double) jugadorServices.getEdad(jugador.getTelefono());
+        List<Jugador> jugadores = new ArrayList<>();
+        jugadores.add(jugador);
 
-        if (buscarEquipo(telefono) == null){
-            return  buscarEquipo(telefono);
-        }else {
-            Jugador jugador = jugadorServices.buscarJugador(telefono);
-            Double edad = (double) jugadorServices.getEdad(jugador.getTelefono());
-            List<Jugador> jugadores = new ArrayList<>();
-            jugadores.add(jugador);
+            Equipo equipo = repositoryService.uniqueMatch(
+                    Query.named(Equipo.class,Equipo.NAMED_QUERY__FIND_BY_REPRESENTANTE)
+                            .withParameter("representante", jugadorServices.buscarJugador(telefono))
+            ).orElse(Equipo.crearEquipo(jugador,edad,jugadores));
 
-            return repositoryService.persist(Equipo.crearEquipo(jugador,edad,jugadores));
+            return repositoryService.persist(equipo);
         }
-    }
+
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)

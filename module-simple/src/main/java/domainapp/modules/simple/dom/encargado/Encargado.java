@@ -22,7 +22,6 @@ import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
 import org.apache.causeway.applib.annotation.Title;
 import org.apache.causeway.applib.layout.LayoutConstants;
-import org.apache.causeway.applib.services.message.MessageService;
 import org.apache.causeway.applib.services.repository.RepositoryService;
 import org.apache.causeway.applib.services.title.TitleService;
 
@@ -72,8 +71,6 @@ public class Encargado{
 
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent TitleService titleService;
-    @Inject @NotPersistent MessageService messageService;
-
 
     @Title
     @Getter @Setter @ToString.Include
@@ -102,7 +99,6 @@ public class Encargado{
             describedAs = "Deletes this object from the persistent datastore")
     public List<Encargado> eliminarEncargado() {
         final String title = titleService.titleOf(this);
-        messageService.informUser(String.format("'%s' deleted", title));
         repositoryService.removeAndFlush(this);
         return repositoryService.allInstances(Encargado.class);
     }

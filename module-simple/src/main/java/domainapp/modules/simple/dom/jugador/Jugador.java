@@ -1,6 +1,7 @@
 package domainapp.modules.simple.dom.jugador;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,7 +24,6 @@ import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
 import org.apache.causeway.applib.annotation.Title;
 import org.apache.causeway.applib.layout.LayoutConstants;
-import org.apache.causeway.applib.services.message.MessageService;
 import org.apache.causeway.applib.services.repository.RepositoryService;
 import org.apache.causeway.applib.services.title.TitleService;
 
@@ -60,7 +60,6 @@ public class Jugador{
     static final String NAMED_QUERY__FIND_BY_TEL = "Jugador.findByTel";
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent TitleService titleService;
-    @Inject @NotPersistent MessageService messageService;
 
     public static Jugador crearJugador(final String nombre, final String apellido, final String telefono, final String mail, final String password, final LocalDate fechaDeNacimiento) {
         val jugador = new Jugador();
@@ -70,6 +69,7 @@ public class Jugador{
         jugador.setMail(mail);
         jugador.setPassword(password);
         jugador.setFechaNacimiento(fechaDeNacimiento);
+        jugador.setEdad((double) Period.between(fechaDeNacimiento, LocalDate.now()).getYears());
         return jugador;
     }
 
@@ -100,6 +100,10 @@ public class Jugador{
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "7")
     private LocalDate fechaNacimiento;
 
+    @Getter@Setter
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "8")
+    private Double edad;
+
 
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(
@@ -107,7 +111,6 @@ public class Jugador{
             position = ActionLayout.Position.PANEL)
     public List<Jugador> eliminarJugador() {
         final String title = titleService.titleOf(this);
-        messageService.informUser(String.format("'%s' deleted", title));
         repositoryService.removeAndFlush(this);
         return repositoryService.allInstances(Jugador.class);
     }

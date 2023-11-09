@@ -23,7 +23,6 @@ import org.apache.causeway.applib.annotation.Property;
 import org.apache.causeway.applib.annotation.PropertyLayout;
 import org.apache.causeway.applib.annotation.Publishing;
 import org.apache.causeway.applib.layout.LayoutConstants;
-import org.apache.causeway.applib.services.message.MessageService;
 import org.apache.causeway.applib.services.repository.RepositoryService;
 import org.apache.causeway.applib.services.title.TitleService;
 
@@ -64,11 +63,10 @@ public class Equipo {
 
     static final String NAMED_QUERY__FIND_BY_REPRESENTANTE = "Equipo.findByRepresentante";
     @Inject @NotPersistent TitleService titleService;
-    @Inject @NotPersistent MessageService messageService;
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent JugadorServices jugadorServices;
 
-    public static Equipo crearEquipo(final Jugador representante, final Double edadPromedio, final List<Jugador> jugadores) {
+    public static Equipo crearEquipo(final Jugador representante, final Double edadPromedio,final List<Jugador> jugadores) {
         val equipo = new Equipo();
         equipo.setRepresentante(representante);
         equipo.setEdadPromedio(edadPromedio);
@@ -98,17 +96,42 @@ public class Equipo {
     )
     public List<Equipo> eliminarEquipo() {
         final String title = titleService.titleOf(this);
-        messageService.informUser(String.format("'%s' deleted", title));
-        repositoryService.removeAndFlush(this);
+        repositoryService.remove(this);
         return repositoryService.allInstances(Equipo.class);
     }
 
     @Action(semantics = NON_IDEMPOTENT)
     @ActionLayout(position = ActionLayout.Position.PANEL)
     public Equipo agregarJugadorAlEquipo(String telefono){
-        jugadoresEquipo.add(jugadorServices.buscarJugador(telefono));
+
+        Jugador jugador = jugadorServices.buscarJugador(telefono);
+
+        if (!this.jugadoresEquipo.contains(jugador)) {
+            this.jugadoresEquipo.add(jugador);
+            this.setEdadPromedio((this.getEdadPromedio() + jugador.getEdad())/this.jugadoresEquipo.size());
+        }
+
         return this;
     }
+
+
+    @Action(semantics = NON_IDEMPOTENT)
+    @ActionLayout(position = ActionLayout.Position.PANEL)
+    public Equipo eliminarJugadorDeEquipo(String telefono) {
+
+        Jugador jugador = this.jugadoresEquipo.stream()
+                .filter(j -> j.getTelefono().equals(telefono))
+                .findFirst()
+                .orElse(null);
+
+        if (jugador != null) {
+            this.jugadoresEquipo.remove(jugador);
+
+        }
+
+        return this;
+    }
+
 
 
 }

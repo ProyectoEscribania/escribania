@@ -33,7 +33,7 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 @Named(SimpleModule.NAMESPACE + ".SolicituService")
 @DomainService(nature = NatureOfService.VIEW)
 @DomainServiceLayout(named = "Solicitud")
-@RequiredArgsConstructor(onConstructor_ = {@Inject} )
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class SolicitudServices {
 
     @Inject JugadorServices jugadorServices;
@@ -51,7 +51,6 @@ public class SolicitudServices {
 
         //Precio de la canchaaaa
         Double precio = 0.0;
-
 
 
         Jugador jugador = jugadorServices.buscarJugador(telefono);
@@ -90,24 +89,6 @@ public class SolicitudServices {
     public List<Solicitud> verSolicitudes() {
         return repositoryService.allInstances(Solicitud.class);
     }
-
-
-    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Horarios> horariosRestringidos(String diaString) {
-
-        List<Horarios> horariosRestringidos = new ArrayList<>();
-
-        for (Horarios hora : Horarios.values()) {
-            if (partidoServices.buscarPartido(String.valueOf(hora), diaString, "TRES") == null) {
-                horariosRestringidos.add(hora);
-            }
-        }
-            return horariosRestringidos;
-    }
-
-
-
 
 
 }

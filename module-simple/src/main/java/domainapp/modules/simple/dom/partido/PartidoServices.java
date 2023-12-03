@@ -1,6 +1,7 @@
 package domainapp.modules.simple.dom.partido;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,8 +38,6 @@ public class PartidoServices {
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent JugadorServices jugadorServices;
     @Inject @NotPersistent MessageService messageService;
-
-
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
@@ -124,6 +123,40 @@ public class PartidoServices {
         if (buscarPartido(horario, dia, "UNO") == null) numeroCancha = NumeroCancha.UNO;
         else if (buscarPartido(horario, dia, "DOS") == null) numeroCancha = NumeroCancha.DOS;
         return numeroCancha;
+    }
+
+
+    @Action
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    public List<String> horariosRestringidos(String diaString) {
+
+
+
+        List<String> horariosRestringidos = new ArrayList<>();
+
+        for (Horarios hora : Horarios.values()) {
+            if (buscarPartidoTipoDato(hora.toString(), diaString)) {
+                horariosRestringidos.add(hora.toString());
+            }
+        }
+        return horariosRestringidos;
+
+
+    }
+
+    @Action
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
+    public boolean buscarPartidoTipoDato(final String horarioS, final String diaS) {
+
+        Horarios horario = Horarios.valueOf(horarioS);
+        LocalDate dia = LocalDate.parse(diaS);
+
+        return repositoryService.uniqueMatch(
+                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_NAME_EXACT)
+                        .withParameter("horario", horario)
+                        .withParameter("dia", dia)
+                        .withParameter("numeroCancha", NumeroCancha.TRES)
+        ).orElse(null) == null;
     }
 
 }

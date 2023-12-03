@@ -2,7 +2,6 @@ package domainapp.modules.simple.dom.solicitud.equipos;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -113,38 +112,6 @@ public class SolicitudEquipoServices {
     public List<SolicitudEquipo> verSolicitudes() {
         return repositoryService.allInstances(SolicitudEquipo.class);
     }
-
-
-    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<Horarios> horariosRestringidos(String diaString) {
-
-        List<Horarios> horariosRestringidos = new ArrayList<>();
-
-        for (Horarios hora : Horarios.values()) {
-            if (partidoServices.buscarPartido(String.valueOf(hora), diaString, "TRES").equals(null)) {
-                horariosRestringidos.add(hora);
-            }
-        }
-        return horariosRestringidos;
-    }
-
-
-    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public boolean horariosRestringidos2(String diaString) {
-
-        List<Horarios> horariosRestringidos = new ArrayList<>();
-
-
-            if (partidoServices.buscarPartido("_18_HS", diaString, "TRES").equals(null)) {
-                return true;
-            }
-            else return false;
-
-
-    }
-
 
 
     public boolean esEquipo1(SolicitudEquipo solicitudEquipo) {

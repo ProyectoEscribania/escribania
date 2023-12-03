@@ -35,7 +35,7 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 @Named(SimpleModule.NAMESPACE + ".SolicitudEquipoServices")
 @DomainService(nature = NatureOfService.VIEW)
 @DomainServiceLayout(named = "SolicituEquipo")
-@RequiredArgsConstructor(onConstructor_ = {@Inject} )
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class SolicitudEquipoServices {
 
     @Inject @NotPersistent JugadorServices jugadorServices;
@@ -49,32 +49,48 @@ public class SolicitudEquipoServices {
     public SolicitudEquipo crearSolicitudEquipo(final String diaString, final String telefono, final String horarioSting) {
 
 
+        Equipo equipo = equipoServices.buscarEquipo(telefono);
 
-        Horarios horario = Horarios.valueOf(horarioSting);
-        LocalDate dia = LocalDate.parse(diaString);
+        if (equipo != null) {
 
-        //Precio de la canchaaaa
-        Double precio = 20000.0;
+            Horarios horario = Horarios.valueOf(horarioSting);
+            LocalDate dia = LocalDate.parse(diaString);
+            Double precio = 0.0;
+            NumeroCancha numeroCancha = partidoServices.definirCancha(diaString, horarioSting);
+            SolicitudEquipo solicitudEquipo = haySolicitud(horario, dia, numeroCancha, precio);
 
-        Jugador jugador = jugadorServices.buscarJugador(telefono);
-
-        NumeroCancha numeroCancha = partidoServices.definirCancha(diaString, horarioSting);
-
-        SolicitudEquipo solicitudEquipo = haySolicitud(horario, dia, numeroCancha, precio);
-
-
-
-        if (esEquipo1(solicitudEquipo)) {
-
-            solicitudEquipo.setEquipo1(equipoServices.buscarEquipo(telefono));
-            return repositoryService.persist(solicitudEquipo);
+            if (esEquipo1(solicitudEquipo)) {
+                return asignarEquipo1YSolicitarPartido(solicitudEquipo, telefono);
+            } else {
+                asignarEquipo2YSolicitarPartido(solicitudEquipo, telefono, horarioSting, diaString, precio);
+                return null;
+            }
 
         } else {
-            solicitudEquipo.setEquipo2(equipoServices.buscarEquipo(telefono));
+            throw new IllegalArgumentException("No existe equipo para este usuario, porfavor cree su equipo");
+        }
+    }
+
+    private SolicitudEquipo asignarEquipo1YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono) {
+        Equipo equipo1 = equipoServices.buscarEquipo(telefono);
+        solicitudEquipo.setEquipo1(equipo1);
+        repositoryService.persist(solicitudEquipo);
+        return solicitudEquipo;
+    }
+
+    private void asignarEquipo2YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono, String horarioSting, String diaString, Double precio) {
+        Equipo equipo2 = equipoServices.buscarEquipo(telefono);
+        if (esMismoEquipo(solicitudEquipo, equipo2)) {
+            throw new IllegalArgumentException("El equipo no puede ser el mismo que el Equipo 1 en la solicitud actual");
+        } else {
+            solicitudEquipo.setEquipo2(equipo2);
             partidoServices.crearPartido(horarioSting, diaString, solicitudEquipo.getEquipo1().getRepresentante().getTelefono(), precio);
             repositoryService.removeAndFlush(solicitudEquipo);
-            return null;
         }
+    }
+
+    private boolean esMismoEquipo(SolicitudEquipo solicitudEquipo, Equipo equipo) {
+        return solicitudEquipo.getEquipo1().equals(equipo);
     }
 
 
@@ -88,7 +104,7 @@ public class SolicitudEquipoServices {
                         .withParameter("dia", dia)
                         .withParameter("numeroCancha", numeroCancha)
         ).orElse(
-                SolicitudEquipo.crearSolicitudEquipo(dia, horario, numeroCancha, precio, Estados.MATCHMAKING, equipo1,equipo2)
+                SolicitudEquipo.crearSolicitudEquipo(dia, horario, numeroCancha, precio, Estados.MATCHMAKING, equipo1, equipo2)
         );
     }
 
@@ -99,18 +115,37 @@ public class SolicitudEquipoServices {
     }
 
 
+    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<Horarios> horariosRestringidos(String diaString) {
-
 
         List<Horarios> horariosRestringidos = new ArrayList<>();
 
         for (Horarios hora : Horarios.values()) {
-            if (partidoServices.buscarPartido(String.valueOf(hora), diaString, "TRES") == null) {
+            if (partidoServices.buscarPartido(String.valueOf(hora), diaString, "TRES").equals(null)) {
                 horariosRestringidos.add(hora);
             }
         }
-            return horariosRestringidos;
+        return horariosRestringidos;
     }
+
+
+    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    public boolean horariosRestringidos2(String diaString) {
+
+        List<Horarios> horariosRestringidos = new ArrayList<>();
+
+
+            if (partidoServices.buscarPartido("_18_HS", diaString, "TRES").equals(null)) {
+                return true;
+            }
+            else return false;
+
+
+    }
+
+
 
     public boolean esEquipo1(SolicitudEquipo solicitudEquipo) {
         List<Jugador> jugadoresEquipo = solicitudEquipo.getEquipo1().getJugadoresEquipo();
@@ -120,6 +155,7 @@ public class SolicitudEquipoServices {
             return false;
         }
     }
+
 
 }
 

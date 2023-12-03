@@ -50,7 +50,7 @@ public class SolicitudServices {
         Horarios horario = Horarios.valueOf(horarioSting);
 
         //Precio de la canchaaaa
-        Double precio = 20000.0;
+        Double precio = 0.0;
 
 
 
@@ -92,6 +92,8 @@ public class SolicitudServices {
     }
 
 
+    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<Horarios> horariosRestringidos(String diaString) {
 
         List<Horarios> horariosRestringidos = new ArrayList<>();

@@ -1,7 +1,6 @@
 package domainapp.modules.simple.dom.partido;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -127,26 +126,8 @@ public class PartidoServices {
 
 
     @Action
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public List<String> horariosRestringidos(String diaString) {
-
-
-
-        List<String> horariosRestringidos = new ArrayList<>();
-
-        for (Horarios hora : Horarios.values()) {
-            if (buscarPartidoTipoDato(hora.toString(), diaString)) {
-                horariosRestringidos.add(hora.toString());
-            }
-        }
-        return horariosRestringidos;
-
-
-    }
-
-    @Action
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
-    public boolean buscarPartidoTipoDato(final String horarioS, final String diaS) {
+    public boolean existePartido3(final String horarioS, final String diaS) {
 
         Horarios horario = Horarios.valueOf(horarioS);
         LocalDate dia = LocalDate.parse(diaS);

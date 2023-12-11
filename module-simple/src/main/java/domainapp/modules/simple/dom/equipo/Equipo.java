@@ -107,7 +107,7 @@ public class Equipo {
 
         Jugador jugador = jugadorServices.buscarJugador(telefono);
 
-        if (!this.jugadoresEquipo.contains(jugador)) {
+        if (!this.jugadoresEquipo.contains(jugador) && jugador != null) {
             this.jugadoresEquipo.add(jugador);
             this.setEdadPromedio((this.getEdadPromedio() + jugador.getEdad())/this.jugadoresEquipo.size());
         }

@@ -42,11 +42,19 @@ public class PartidoServices {
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
     public Partido crearPartido(final String horarioSting, final String diaString, final String telefono, final Double precio) {
-        Horarios horario = Horarios.valueOf(horarioSting);
-        LocalDate dia = LocalDate.parse(diaString);
-        NumeroCancha numeroCancha = definirCancha(diaString, horarioSting);
-        Jugador representante = jugadorServices.buscarJugador(telefono);
-        return repositoryService.persist(Partido.crearTurno(horario, dia, numeroCancha, representante, precio));
+
+        if (!hayPartido(telefono).isEmpty()) {
+            messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE");
+            return null;
+        }else {
+            Horarios horario = Horarios.valueOf(horarioSting);
+            LocalDate dia = LocalDate.parse(diaString);
+            NumeroCancha numeroCancha = definirCancha(diaString, horarioSting);
+            Jugador representante = jugadorServices.buscarJugador(telefono);
+            return repositoryService.persist(Partido.crearTurno(horario, dia, numeroCancha, representante, precio));
+        }
+
+
     }
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
@@ -61,7 +69,7 @@ public class PartidoServices {
 
         if (!hayPartido(telefono).isEmpty()) {
             messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE");
-            return hayPartido(telefono).get(0);
+            return null;
         }
 
         NumeroCancha numeroCancha = definirCancha(diaString, horarioSting);
@@ -125,8 +133,6 @@ public class PartidoServices {
     }
 
 
-    @Action
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
     public boolean existePartido3(final String horarioS, final String diaS) {
 
         Horarios horario = Horarios.valueOf(horarioS);

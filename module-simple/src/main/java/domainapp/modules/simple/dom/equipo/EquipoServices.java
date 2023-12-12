@@ -73,4 +73,9 @@ public class EquipoServices {
     }
 
 
+    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    public boolean tieneEquipo(String telefono) {
+        return buscarEquipo(telefono) != null;
+    }
 }

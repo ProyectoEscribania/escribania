@@ -21,6 +21,7 @@ import org.apache.causeway.applib.services.repository.RepositoryService;
 import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.equipo.EquipoServices;
 
 @Named(SimpleModule.NAMESPACE + ".JugadorServices")
 @DomainService(nature = NatureOfService.VIEW)
@@ -29,6 +30,7 @@ import domainapp.modules.simple.SimpleModule;
 public class JugadorServices {
 
     @Inject @NotPersistent RepositoryService repositoryService;
+
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
@@ -64,6 +66,8 @@ public class JugadorServices {
     public List<Jugador> verJugadores() {
         return repositoryService.allInstances(Jugador.class);
     }
+
+
 
 
 }

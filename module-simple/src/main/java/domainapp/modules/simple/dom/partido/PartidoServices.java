@@ -117,6 +117,8 @@ public class PartidoServices {
     }
 
 
+    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
     public List<Partido> hayPartido(final String telefono) {
         Jugador jugador = jugadorServices.buscarJugador(telefono);
         return (repositoryService.allMatches(Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE)
@@ -145,5 +147,9 @@ public class PartidoServices {
                         .withParameter("numeroCancha", NumeroCancha.TRES)
         ).orElse(null) == null;
     }
+
+
+
+
 
 }

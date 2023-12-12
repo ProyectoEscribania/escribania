@@ -121,17 +121,17 @@ public class Equipo {
     public Equipo eliminarJugadorDeEquipo(String telefono) {
 
         Jugador jugador = this.jugadoresEquipo.stream()
-                .filter(j -> j.getTelefono().equals(telefono))
+                .filter(j -> j.getTelefono().equals(telefono) && !telefono.equals(this.representante.getTelefono()))
                 .findFirst()
                 .orElse(null);
 
         if (jugador != null) {
             this.jugadoresEquipo.remove(jugador);
-
         }
 
         return this;
     }
+
 
 
 

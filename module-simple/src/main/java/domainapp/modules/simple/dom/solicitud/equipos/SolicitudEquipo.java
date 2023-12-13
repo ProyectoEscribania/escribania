@@ -89,7 +89,7 @@ public class SolicitudEquipo {
         solicitud.setPrecio(precio);
         solicitud.setEstados(estado);
         solicitud.setEquipo1(equipo1);
-        solicitud.setEquipo1(equipo2);
+        solicitud.setEquipo2(equipo2);
         return solicitud;
     }
 

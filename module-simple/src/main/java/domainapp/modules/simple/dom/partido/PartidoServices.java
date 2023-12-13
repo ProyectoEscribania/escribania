@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.NotPersistent;
 
+import domainapp.modules.simple.dom.equipo.Equipo;
+
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
@@ -56,8 +58,16 @@ public class PartidoServices {
 
 
     }
+    public Partido crearPartidoEquipos(final String horarioSting, final String diaString, final Equipo equipo1, final Equipo equipo2, final Double precio) {
+        Horarios horario = Horarios.valueOf(horarioSting);
+        LocalDate dia = LocalDate.parse(diaString);
+        NumeroCancha numeroCancha = definirCancha(diaString, horarioSting);
+        Jugador representante = jugadorServices.buscarJugador(equipo1.getRepresentante().getTelefono());
 
-    @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
+        return repositoryService.persist(Partido.crearTurnoEquipos(horario, dia, numeroCancha, equipo1,equipo2));
+
+    }
+        @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
     public Partido sacarTurno(final String horarioSting, final String diaString, final String telefono) {
 

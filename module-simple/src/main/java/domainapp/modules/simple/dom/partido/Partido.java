@@ -15,6 +15,8 @@ import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 import javax.jdo.annotations.Unique;
 
+import domainapp.modules.simple.dom.equipo.Equipo;
+
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainObject;
@@ -111,6 +113,18 @@ public class Partido{
             return partido;
     }
 
+    public static Partido crearTurnoEquipos(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Equipo equipo1, final Equipo equipo2) {
+        val partido = new Partido();
+        partido.setDia(dia);
+        partido.setHorario(horario);
+        partido.setNumeroCancha(numeroCancha);
+        partido.setEquipo1(equipo1);
+        partido.setEquipo2(equipo2);
+        partido.setEstados(Estados.CONFIRMADO);
+        partido.setPrecio((double) 0);
+        return partido;
+    }
+
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent TitleService titleService;
 
@@ -145,6 +159,18 @@ public class Partido{
     @Getter@Setter
     @Column(allowsNull = "true")
     private Jugador representante;
+
+    @Property
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "7")
+    @Getter@Setter
+    @Column(allowsNull = "true")
+    private Equipo equipo1;
+
+    @Property
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "8")
+    @Getter@Setter
+    @Column(allowsNull = "true")
+    private Equipo equipo2;
 
 
     @Action(semantics = IDEMPOTENT, commandPublishing = Publishing.ENABLED, executionPublishing = Publishing.ENABLED)

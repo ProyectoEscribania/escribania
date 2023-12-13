@@ -50,7 +50,7 @@ public class SolicitudEquipoServices {
 
         Equipo equipo = equipoServices.buscarEquipo(telefono);
 
-        if (equipo != null) {
+        if (equipo != null && partidoServices.hayPartido(telefono) == null) {
 
             Horarios horario = Horarios.valueOf(horarioSting);
             LocalDate dia = LocalDate.parse(diaString);
@@ -83,7 +83,7 @@ public class SolicitudEquipoServices {
             throw new IllegalArgumentException("El equipo no puede ser el mismo que el Equipo 1 en la solicitud actual");
         } else {
             solicitudEquipo.setEquipo2(equipo2);
-            partidoServices.crearPartido(horarioSting, diaString, solicitudEquipo.getEquipo1().getRepresentante().getTelefono(), precio);
+            partidoServices.crearPartidoEquipos(horarioSting, diaString, solicitudEquipo.getEquipo1(),solicitudEquipo.getEquipo2(), precio);
             repositoryService.removeAndFlush(solicitudEquipo);
         }
     }

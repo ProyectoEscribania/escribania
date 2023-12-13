@@ -9,6 +9,8 @@ import javax.jdo.annotations.NotPersistent;
 
 import domainapp.modules.simple.dom.equipo.Equipo;
 
+import domainapp.modules.simple.dom.equipo.EquipoServices;
+
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
@@ -39,6 +41,8 @@ public class PartidoServices {
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent JugadorServices jugadorServices;
     @Inject @NotPersistent MessageService messageService;
+
+    @Inject @NotPersistent EquipoServices equipoServices;
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
@@ -75,10 +79,11 @@ public class PartidoServices {
         LocalDate dia = LocalDate.parse(diaString);
 
         Jugador representante = jugadorServices.buscarJugador(telefono);
+        Equipo equipo = equipoServices.buscarEquipo(telefono);
 
 
-        if (!hayPartido(telefono).isEmpty()) {
-            messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE");
+        if (!hayPartido(telefono).isEmpty() || tienePartido(equipo)==false) {
+            messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE O EQUIPO");
             return null;
         }
 
@@ -109,6 +114,21 @@ public class PartidoServices {
                 Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_REPRESENTANTE)
                         .withParameter("representante", representante));
     }
+//    public List<Partido> buscarPartidoPorRepresentanteEquipo(final String telefono) {
+//        Jugador representante = jugadorServices.buscarJugador(telefono);
+//        return repositoryService.allMatches(
+//                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_REPRESENTANTE)
+//                        .withParameter("representante", representante));
+//    }
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
+    public List<Partido> buscarPartidoPorEquipo(final String telefono) {
+
+        Equipo equipo = equipoServices.buscarEquipo(telefono);
+        return repositoryService.allMatches(
+                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_EQUIPO)
+                        .withParameter("equipo", equipo));
+    }
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-list")
@@ -137,6 +157,7 @@ public class PartidoServices {
                 .withParameter("estados2", Estados.ESPERA)));
     }
 
+
     public NumeroCancha definirCancha(final String dia, final String horario) {
         NumeroCancha numeroCancha = NumeroCancha.TRES;
         if (buscarPartido(horario, dia, "UNO") == null) numeroCancha = NumeroCancha.UNO;
@@ -158,7 +179,12 @@ public class PartidoServices {
         ).orElse(null) == null;
     }
 
-
+    public boolean tienePartido(Equipo equipo){
+        if (buscarPartidoPorEquipo(equipo.getRepresentante().getTelefono()).isEmpty()){
+            return true;
+        }
+        else return false;
+    }
 
 
 

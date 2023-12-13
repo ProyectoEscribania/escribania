@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.NotPersistent;
 
+import domainapp.modules.simple.dom.partido.PartidoServices;
+
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
@@ -32,6 +34,8 @@ public class EquipoServices {
 
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent JugadorServices jugadorServices;
+
+
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
@@ -78,4 +82,6 @@ public class EquipoServices {
     public boolean tieneEquipo(String telefono) {
         return buscarEquipo(telefono) != null;
     }
+
+
 }

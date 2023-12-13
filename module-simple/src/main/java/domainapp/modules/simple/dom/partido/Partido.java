@@ -79,6 +79,12 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
                         "FROM domainapp.modules.simple.dom.partido.Partido " +
                         "WHERE representante == :representante && (estados == :estados || estados == :estados2)"
         ),
+        @Query(
+                name = Partido.NAMED_QUERY__FIND_BY_EQUIPO,
+                value = "SELECT " +
+                        "FROM domainapp.modules.simple.dom.partido.Partido " +
+                        "WHERE equipo == :equipo"
+        ),
 
 })
 @DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
@@ -90,6 +96,8 @@ public class Partido{
     static final String NAMED_QUERY__FIND_BY_ESTADO = "Partido.findByEstado";
     static final String NAMED_QUERY__FIND_BY_REPRESENTANTE = "Partido.findByRepresentante";
     static final String NAMED_QUERY__FIND_BY_ESTADO_AND_REPRESENTANTE = "Partido.findByEstados";
+
+    static final String NAMED_QUERY__FIND_BY_EQUIPO = "Partido.findByEquipo";
 
     public static Partido crearTurno(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Jugador representante, final Double precio) {
         val partido = new Partido();

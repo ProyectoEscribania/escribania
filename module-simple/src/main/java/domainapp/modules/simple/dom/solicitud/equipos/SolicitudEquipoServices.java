@@ -3,10 +3,15 @@ package domainapp.modules.simple.dom.solicitud.equipos;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.NotPersistent;
+
+import domainapp.modules.simple.dom.jugador.Jugador;
+import domainapp.modules.simple.dom.solicitud.simple.Solicitud;
+import domainapp.modules.simple.dom.solicitud.simple.SolicitudServices;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -40,6 +45,7 @@ public class SolicitudEquipoServices {
     @Inject @NotPersistent PartidoServices partidoServices;
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject EquipoServices equipoServices;
+    @Inject SolicitudServices solicitudServices;
 
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
@@ -121,6 +127,82 @@ public class SolicitudEquipoServices {
             return false;
         }
     }
+
+//    public Optional<SolicitudEquipo> buscarSolicitudPorEquipos(Equipo equipo1, Equipo equipo2){
+//        return repositoryService.uniqueMatch(
+//                Query.named(SolicitudEquipo.class, SolicitudEquipo.NAMED_QUERY__FIND_BY_EQUIPOS)
+//                        .withParameter("equipo1", equipo1)
+//                        .withParameter("equipo2", equipo2)
+//        );
+//    }
+
+
+//    @Action
+//    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+//    public boolean tieneSolicitud(String telefono) {
+//        boolean tiene = false;
+//        Equipo equipo1 = equipoServices.buscarEquipo(telefono);
+//        Equipo equipo2 = equipoServices.buscarEquipo(telefono);
+//
+//        if (equipo1 != null) {
+//            if (!repositoryService.uniqueMatch(Query.named(SolicitudEquipo.class, SolicitudEquipo.NAMED_QUERY__FIND_BY_EQUIPO1)
+//                    .withParameter("equipo1", equipo1)
+//            ).isEmpty()) {
+//                tiene = true;
+//            }
+//        }
+//
+//        if (equipo2 != null) {
+//            if (!repositoryService.uniqueMatch(Query.named(SolicitudEquipo.class, SolicitudEquipo.NAMED_QUERY__FIND_BY_EQUIPO2)
+//                    .withParameter("equipo2", equipo2)
+//            ).isEmpty()) {
+//                tiene = true;
+//            }
+//        }
+//
+//        return tiene;
+//    }
+
+
+    @Action
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
+    public boolean tieneSolicitud(String telefono) {
+        List<SolicitudEquipo> solicitudesEquipo = verSolicitudes();
+
+        for (SolicitudEquipo solicitud : solicitudesEquipo) {
+            Equipo equipo1 = solicitud.getEquipo1();
+            Equipo equipo2 = solicitud.getEquipo2();
+
+            if ((equipo1 != null && equipo1.equals(equipoServices.buscarEquipo(telefono))) ||
+                    (equipo2 != null && equipo2.equals(equipoServices.buscarEquipo(telefono)))) {
+                return true; // El jugador está en un equipo que tiene una solicitud de equipo
+            }
+        }
+
+        List<Solicitud> solicitudes = solicitudServices.verSolicitudes();
+
+        for (Solicitud solicitud : solicitudes) {
+            if (tieneJugadorEnSolicitud(solicitud, telefono)) {
+                return true; // El jugador está en la lista de una solicitud normal
+            }
+        }
+
+        return false;
+    }
+
+    private boolean tieneJugadorEnSolicitud(Solicitud solicitud, String telefono) {
+        List<Jugador> jugadores = solicitud.getJugadores();
+
+        for (Jugador jugador : jugadores) {
+            if (jugador != null && jugador.getTelefono().equals(telefono)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 
 
 }

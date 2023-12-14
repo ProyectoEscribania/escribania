@@ -56,7 +56,8 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
                 value = "SELECT " +
                         "FROM domainapp.modules.simple.dom.solicitud.simple.Solicitud " +
                         "WHERE horario == :horario && dia == :dia && numeroCancha == :numeroCancha"
-        )
+        ),
+
 }
 )
 

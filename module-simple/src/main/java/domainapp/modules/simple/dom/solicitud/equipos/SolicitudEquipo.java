@@ -64,7 +64,20 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
                 value = "SELECT " +
                         "FROM domainapp.modules.simple.dom.solicitud.equipos.SolicitudEquipo " +
                         "WHERE horario == :horario && dia == :dia && numeroCancha == :numeroCancha"
+        ),
+        @Query(
+                name = SolicitudEquipo.NAMED_QUERY__FIND_BY_EQUIPO1,
+                value = "SELECT " +
+                        "FROM domainapp.modules.simple.dom.solicitud.equipos.SolicitudEquipo " +
+                        "WHERE equipo1 == :equipo1"
+        ),
+        @Query(
+                name = SolicitudEquipo.NAMED_QUERY__FIND_BY_EQUIPO2,
+                value = "SELECT " +
+                        "FROM domainapp.modules.simple.dom.solicitud.equipos.SolicitudEquipo " +
+                        "WHERE equipo2 == :equipo2"
         )
+
 }
 )
 
@@ -80,7 +93,8 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
 public class SolicitudEquipo {
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Solicitud.findByNameExact";
-
+    static final String NAMED_QUERY__FIND_BY_EQUIPO1 = "Solicitud.findByEquipo1";
+    static final String NAMED_QUERY__FIND_BY_EQUIPO2 = "Solicitud.findByEquipo2";
     public static SolicitudEquipo crearSolicitudEquipo(final LocalDate dia, final  Horarios horario, final  NumeroCancha numeroCancha, final  Double precio, final  Estados estado, final  Equipo equipo1, final Equipo equipo2) {
         val solicitud = new SolicitudEquipo();
         solicitud.setDia(dia);

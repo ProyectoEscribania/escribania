@@ -15,8 +15,6 @@ import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 import javax.jdo.annotations.Unique;
 
-import domainapp.modules.simple.dom.equipo.Equipo;
-
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainObject;
@@ -40,6 +38,7 @@ import lombok.ToString;
 import lombok.val;
 
 import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.equipo.Equipo;
 import domainapp.modules.simple.dom.jugador.Jugador;
 import domainapp.modules.simple.dom.partido.types.Estados;
 import domainapp.modules.simple.dom.partido.types.Horarios;
@@ -128,7 +127,7 @@ public class Partido{
         partido.setNumeroCancha(numeroCancha);
         partido.setEquipo1(equipo1);
         partido.setEquipo2(equipo2);
-        partido.setEstados(Estados.CONFIRMADO);
+        partido.setEstados(Estados.MATCHMAKING);
         partido.setPrecio((double) 0);
         return partido;
     }

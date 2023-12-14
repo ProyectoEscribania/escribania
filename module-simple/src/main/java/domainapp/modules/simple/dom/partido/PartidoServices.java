@@ -7,10 +7,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.NotPersistent;
 
-import domainapp.modules.simple.dom.equipo.Equipo;
-
-import domainapp.modules.simple.dom.equipo.EquipoServices;
-
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
 import org.apache.causeway.applib.annotation.DomainService;
@@ -25,6 +21,8 @@ import org.apache.causeway.applib.services.repository.RepositoryService;
 import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.equipo.Equipo;
+import domainapp.modules.simple.dom.equipo.EquipoServices;
 import domainapp.modules.simple.dom.jugador.Jugador;
 import domainapp.modules.simple.dom.jugador.JugadorServices;
 import domainapp.modules.simple.dom.partido.types.Estados;
@@ -49,16 +47,13 @@ public class PartidoServices {
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-plus")
     public Partido crearPartido(final String horarioSting, final String diaString, final String telefono, final Double precio) {
 
-        if (!hayPartido(telefono).isEmpty()) {
-            messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE");
-            return null;
-        }else {
+
             Horarios horario = Horarios.valueOf(horarioSting);
             LocalDate dia = LocalDate.parse(diaString);
             NumeroCancha numeroCancha = definirCancha(diaString, horarioSting);
             Jugador representante = jugadorServices.buscarJugador(telefono);
             return repositoryService.persist(Partido.crearTurno(horario, dia, numeroCancha, representante, precio));
-        }
+
 
 
     }

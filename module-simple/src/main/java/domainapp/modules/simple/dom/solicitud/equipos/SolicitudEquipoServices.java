@@ -50,7 +50,7 @@ public class SolicitudEquipoServices {
 
         Equipo equipo = equipoServices.buscarEquipo(telefono);
 
-        if (equipo != null && partidoServices.hayPartido(telefono) == null) {
+        if (equipo != null && partidoServices.hayPartido(telefono).isEmpty()) {
 
             Horarios horario = Horarios.valueOf(horarioSting);
             LocalDate dia = LocalDate.parse(diaString);
@@ -65,9 +65,9 @@ public class SolicitudEquipoServices {
                 return null;
             }
 
-        } else {
+        } else if (equipo == null){
             throw new IllegalArgumentException("No existe equipo para este usuario, porfavor cree su equipo");
-        }
+                }else throw new IllegalArgumentException("Ya tienes un partido");
     }
 
     private SolicitudEquipo asignarEquipo1YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono) {

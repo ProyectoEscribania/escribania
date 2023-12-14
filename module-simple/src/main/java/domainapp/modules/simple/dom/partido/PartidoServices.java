@@ -82,7 +82,7 @@ public class PartidoServices {
         Equipo equipo = equipoServices.buscarEquipo(telefono);
 
 
-        if (!hayPartido(telefono).isEmpty() || tienePartido(equipo)==false) {
+        if (!hayPartido(telefono).isEmpty() || (equipoServices.tieneEquipo(telefono) && !tienePartido(equipo))) {
             messageService.warnUser("YA EXISTE UN PARTIDO RESERVADO A TU NOMBRE O EQUIPO");
             return null;
         }
@@ -90,7 +90,24 @@ public class PartidoServices {
         NumeroCancha numeroCancha = definirCancha(diaString, horarioSting);
         return repositoryService.persist(Partido.pedirTurno(horario, dia, numeroCancha, representante));
     }
+    public boolean tienePartido(Equipo equipo){
+        if (buscarPartidoPorEquipo(equipo.getRepresentante().getTelefono()).isEmpty()){
+            return true;
+        }
+        else return false;
+    }
+    @Action(semantics = SemanticsOf.SAFE)
+    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
+    public List<Partido> buscarPartidoPorEquipo(final String telefono) {
 
+        Equipo equipo1 = equipoServices.buscarEquipo(telefono);
+        Equipo equipo2 = equipoServices.buscarEquipo(telefono);
+        return repositoryService.allMatches(
+                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_EQUIPO)
+                        .withParameter("equipo1", equipo1)
+                        .withParameter("equipo2", equipo2)
+        );
+    }
 
     @Action
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
@@ -120,15 +137,7 @@ public class PartidoServices {
 //                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_REPRESENTANTE)
 //                        .withParameter("representante", representante));
 //    }
-    @Action(semantics = SemanticsOf.SAFE)
-    @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-search")
-    public List<Partido> buscarPartidoPorEquipo(final String telefono) {
 
-        Equipo equipo = equipoServices.buscarEquipo(telefono);
-        return repositoryService.allMatches(
-                Query.named(Partido.class, Partido.NAMED_QUERY__FIND_BY_EQUIPO)
-                        .withParameter("equipo", equipo));
-    }
 
     @Action(semantics = SemanticsOf.SAFE)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR, cssClassFa = "fa-list")
@@ -179,12 +188,7 @@ public class PartidoServices {
         ).orElse(null) == null;
     }
 
-    public boolean tienePartido(Equipo equipo){
-        if (buscarPartidoPorEquipo(equipo.getRepresentante().getTelefono()).isEmpty()){
-            return true;
-        }
-        else return false;
-    }
+
 
 
 

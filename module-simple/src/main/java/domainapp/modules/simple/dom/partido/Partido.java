@@ -83,7 +83,7 @@ import domainapp.modules.simple.dom.partido.types.NumeroCancha;
                 name = Partido.NAMED_QUERY__FIND_BY_EQUIPO,
                 value = "SELECT " +
                         "FROM domainapp.modules.simple.dom.partido.Partido " +
-                        "WHERE equipo == :equipo"
+                        "WHERE equipo1 == :equipo1 || equipo2 == :equipo2"
         ),
 
 })

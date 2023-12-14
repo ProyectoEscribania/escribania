@@ -44,7 +44,7 @@ public class SolicitudEquipoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public SolicitudEquipo crearSolicitudEquipo(final String diaString, final String telefono, final String horarioSting) {
+    public boolean crearSolicitudEquipo(final String diaString, final String telefono, final String horarioSting) {
 
 
         Equipo equipo = equipoServices.buscarEquipo(telefono);
@@ -61,7 +61,7 @@ public class SolicitudEquipoServices {
                 return asignarEquipo1YSolicitarPartido(solicitudEquipo, telefono);
             } else {
                 asignarEquipo2YSolicitarPartido(solicitudEquipo, telefono, horarioSting, diaString, precio);
-                return null;
+                return true;
             }
 
         } else if (equipo == null){
@@ -69,11 +69,11 @@ public class SolicitudEquipoServices {
                 }else throw new IllegalArgumentException("Ya tienes un partido");
     }
 
-    private SolicitudEquipo asignarEquipo1YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono) {
+    private boolean asignarEquipo1YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono) {
         Equipo equipo1 = equipoServices.buscarEquipo(telefono);
         solicitudEquipo.setEquipo1(equipo1);
         repositoryService.persist(solicitudEquipo);
-        return solicitudEquipo;
+        return false;
     }
 
     private void asignarEquipo2YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono, String horarioSting, String diaString, Double precio) {

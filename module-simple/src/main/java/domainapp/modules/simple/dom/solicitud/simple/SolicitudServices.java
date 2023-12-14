@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import domainapp.modules.simple.SimpleModule;
 import domainapp.modules.simple.dom.jugador.Jugador;
 import domainapp.modules.simple.dom.jugador.JugadorServices;
+import domainapp.modules.simple.dom.partido.Partido;
 import domainapp.modules.simple.dom.partido.PartidoServices;
 import domainapp.modules.simple.dom.partido.types.Estados;
 import domainapp.modules.simple.dom.partido.types.Horarios;
@@ -48,11 +49,7 @@ public class SolicitudServices {
 
         LocalDate dia = LocalDate.parse(diaString);
         Horarios horario = Horarios.valueOf(horarioSting);
-
-        //Precio de la canchaaaa
         Double precio = 0.0;
-
-
         Jugador jugador = jugadorServices.buscarJugador(telefono);
 
         NumeroCancha numeroCancha = partidoServices.definirCancha(diaString, horarioSting);
@@ -63,7 +60,8 @@ public class SolicitudServices {
 
         //Incrementar Jugadores despues de testear
         if (solicitud.getJugadores().size() > 2) {
-            partidoServices.crearPartido(horarioSting, diaString, solicitud.getJugadores().get(0).getTelefono(), precio);
+            Partido p1=partidoServices.crearPartido(horarioSting, diaString, solicitud.getJugadores().get(0).getTelefono(), precio);
+            p1.setEstados(Estados.MATCHMAKING);
             repositoryService.removeAndFlush(solicitud);
             return null;
         } else {

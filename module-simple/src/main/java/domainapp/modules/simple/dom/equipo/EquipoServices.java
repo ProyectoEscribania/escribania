@@ -39,7 +39,7 @@ public class EquipoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Equipo crearEquipo(final String telefono) {
+    public Equipo crearEquipo(final String telefono, final String name) {
 
         if (jugadorServices.buscarJugador(telefono) != null) {
 
@@ -53,7 +53,7 @@ public class EquipoServices {
         Equipo equipo = repositoryService.uniqueMatch(
                 Query.named(Equipo.class, Equipo.NAMED_QUERY__FIND_BY_REPRESENTANTE)
                         .withParameter("representante", jugadorServices.buscarJugador(telefono))
-        ).orElse(Equipo.crearEquipo(jugador, edad, jugadores));
+        ).orElse(Equipo.crearEquipo(name, jugador, edad, jugadores));
 
         return repositoryService.persist(equipo);
         }

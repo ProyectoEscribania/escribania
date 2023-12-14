@@ -67,16 +67,20 @@ public class Equipo {
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent JugadorServices jugadorServices;
 
-    public static Equipo crearEquipo(final Jugador representante, final Double edadPromedio,final List<Jugador> jugadores) {
+    public static Equipo crearEquipo(final String name, final Jugador representante, final Double edadPromedio,final List<Jugador> jugadores) {
         val equipo = new Equipo();
+        equipo.setName(name);
         equipo.setRepresentante(representante);
         equipo.setEdadPromedio(edadPromedio);
         equipo.setJugadoresEquipo(jugadores);
         return equipo;
     }
 
-
     @Title
+    @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "1")
+    @Getter@Setter
+    private String name;
+
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
     @Getter@Setter
     private Jugador representante;

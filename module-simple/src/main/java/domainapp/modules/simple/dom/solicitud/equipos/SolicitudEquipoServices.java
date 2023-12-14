@@ -94,7 +94,7 @@ public class SolicitudEquipoServices {
 
     public SolicitudEquipo haySolicitud(final Horarios horario, final LocalDate dia, final NumeroCancha numeroCancha, final Double precio) {
         Equipo equipo1 = new Equipo();
-        Equipo equipo2 = new Equipo();
+//        Equipo equipo2 = new Equipo();
 
         return repositoryService.uniqueMatch(
                 Query.named(SolicitudEquipo.class, SolicitudEquipo.NAMED_QUERY__FIND_BY_NAME_EXACT)
@@ -102,7 +102,7 @@ public class SolicitudEquipoServices {
                         .withParameter("dia", dia)
                         .withParameter("numeroCancha", numeroCancha)
         ).orElse(
-                SolicitudEquipo.crearSolicitudEquipo(dia, horario, numeroCancha, precio, Estados.MATCHMAKING, equipo1, equipo2)
+                SolicitudEquipo.crearSolicitudEquipo(dia, horario, numeroCancha, precio, Estados.MATCHMAKING, equipo1,null)
         );
     }
 

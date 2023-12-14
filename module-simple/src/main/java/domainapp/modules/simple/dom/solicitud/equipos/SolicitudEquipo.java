@@ -81,7 +81,7 @@ public class SolicitudEquipo {
 
     static final String NAMED_QUERY__FIND_BY_NAME_EXACT = "Solicitud.findByNameExact";
 
-    public static SolicitudEquipo crearSolicitudEquipo(final LocalDate dia, final  Horarios horario, final  NumeroCancha numeroCancha, final  Double precio, final  Estados estado, final  Equipo equipo1, final  Equipo equipo2) {
+    public static SolicitudEquipo crearSolicitudEquipo(final LocalDate dia, final  Horarios horario, final  NumeroCancha numeroCancha, final  Double precio, final  Estados estado, final  Equipo equipo1, final Equipo equipo2) {
         val solicitud = new SolicitudEquipo();
         solicitud.setDia(dia);
         solicitud.setHorario(horario);
@@ -89,7 +89,7 @@ public class SolicitudEquipo {
         solicitud.setPrecio(precio);
         solicitud.setEstados(estado);
         solicitud.setEquipo1(equipo1);
-        solicitud.setEquipo2(equipo2);
+        solicitud.setEquipo2(null);
         return solicitud;
     }
 

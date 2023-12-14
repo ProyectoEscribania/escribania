@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import domainapp.modules.simple.SimpleModule;
 import domainapp.modules.simple.dom.equipo.Equipo;
 import domainapp.modules.simple.dom.equipo.EquipoServices;
-import domainapp.modules.simple.dom.jugador.Jugador;
 import domainapp.modules.simple.dom.jugador.JugadorServices;
 import domainapp.modules.simple.dom.partido.PartidoServices;
 import domainapp.modules.simple.dom.partido.types.Estados;
@@ -115,7 +114,7 @@ public class SolicitudEquipoServices {
 
 
     public boolean esEquipo1(SolicitudEquipo solicitudEquipo) {
-        List<Jugador> jugadoresEquipo = solicitudEquipo.getEquipo1().getJugadoresEquipo();
+        List<String> jugadoresEquipo = solicitudEquipo.getEquipo1().getJugadoresEquipo();
         if (jugadoresEquipo == null) {
             return true;
         } else {

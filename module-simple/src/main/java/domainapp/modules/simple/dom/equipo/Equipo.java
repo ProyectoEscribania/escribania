@@ -1,6 +1,7 @@
 package domainapp.modules.simple.dom.equipo;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -67,7 +68,7 @@ public class Equipo {
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent JugadorServices jugadorServices;
 
-    public static Equipo crearEquipo(final Jugador representante, final Double edadPromedio,final List<Jugador> jugadores) {
+    public static Equipo crearEquipo(final Jugador representante, final Double edadPromedio,final List<String> jugadores) {
         val equipo = new Equipo();
         equipo.setRepresentante(representante);
         equipo.setEdadPromedio(edadPromedio);
@@ -88,7 +89,7 @@ public class Equipo {
     @Property(optionality = Optionality.OPTIONAL, editing = Editing.ENABLED)
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "4")
     @Getter @Setter
-    private List<Jugador> jugadoresEquipo;
+    private List<String> jugadoresEquipo;
 
     @Action(semantics = NON_IDEMPOTENT_ARE_YOU_SURE)
     @ActionLayout(
@@ -97,7 +98,7 @@ public class Equipo {
     )
     public List<Equipo> eliminarEquipo() {
         final String title = titleService.titleOf(this);
-        repositoryService.remove(this);
+        repositoryService.removeAndFlush(this);
         return repositoryService.allInstances(Equipo.class);
     }
 
@@ -107,9 +108,9 @@ public class Equipo {
 
         Jugador jugador = jugadorServices.buscarJugador(telefono);
 
-        if (!this.jugadoresEquipo.contains(jugador) && jugador != null) {
-            this.jugadoresEquipo.add(jugador);
-            this.setEdadPromedio((this.getEdadPromedio() + jugador.getEdad())/this.jugadoresEquipo.size());
+        if (jugador != null && !this.jugadoresEquipo.contains(getInfoJugador(jugador))) {
+
+            this.jugadoresEquipo.add(getInfoJugador(jugador));
         }
 
         return this;
@@ -120,19 +121,39 @@ public class Equipo {
     @ActionLayout(position = ActionLayout.Position.PANEL)
     public Equipo eliminarJugadorDeEquipo(String telefono) {
 
-        Jugador jugador = this.jugadoresEquipo.stream()
-                .filter(j -> j.getTelefono().equals(telefono) && !telefono.equals(this.representante.getTelefono()))
-                .findFirst()
-                .orElse(null);
-
-        if (jugador != null) {
-            this.jugadoresEquipo.remove(jugador);
+        if (!representante.getTelefono().equals(telefono)){
+            Jugador jugador = jugadorServices.buscarJugador(telefono);
+            this.jugadoresEquipo.remove(getInfoJugador(jugador));
         }
-
         return this;
+    }
+
+    // Método para obtener la información del jugador como cadena
+    private String getInfoJugador(Jugador jugador) {
+        if (jugador != null) {
+            return jugador.getNombre() + " " + jugador.getApellido() + " " + jugador.getTelefono();
+        }
+        return "";
     }
 
 
 
+
+    @Action(semantics = NON_IDEMPOTENT)
+    @ActionLayout(position = ActionLayout.Position.PANEL)
+    private List<Jugador> verJugadores() {
+
+        List<Jugador> verJugadores = new ArrayList();
+
+        for (String infoJugador : getJugadoresEquipo()) {
+            String[] partes = infoJugador.split(" "); // Suponiendo que los datos están separados por espacios
+
+
+            verJugadores.add(jugadorServices.buscarJugador(partes[2]));
+
+
+        }
+        return verJugadores;
+    }
 
 }

@@ -45,17 +45,18 @@ public class EquipoServices {
 
 
 
-        Jugador jugador = jugadorServices.buscarJugador(telefono);
-        Double edad = (double) jugadorServices.getEdad(jugador.getTelefono());
-        List<Jugador> jugadores = new ArrayList<>();
-        jugadores.add(jugador);
+            Jugador jugador = jugadorServices.buscarJugador(telefono);
+            Double edad = (double) jugadorServices.getEdad(jugador.getTelefono());
 
-        Equipo equipo = repositoryService.uniqueMatch(
-                Query.named(Equipo.class, Equipo.NAMED_QUERY__FIND_BY_REPRESENTANTE)
-                        .withParameter("representante", jugadorServices.buscarJugador(telefono))
-        ).orElse(Equipo.crearEquipo(jugador, edad, jugadores));
+            List<String> jugadoresEquipo = new ArrayList<>();
 
-        return repositoryService.persist(equipo);
+            jugadoresEquipo.add(jugador.getNombre() + " " + jugador.getApellido() + " " + jugador.getTelefono());
+            Equipo equipo = repositoryService.uniqueMatch(
+                    Query.named(Equipo.class, Equipo.NAMED_QUERY__FIND_BY_REPRESENTANTE)
+                            .withParameter("representante", jugadorServices.buscarJugador(telefono))
+            ).orElse(Equipo.crearEquipo(jugador, edad, jugadoresEquipo));
+
+            return repositoryService.persist(equipo);
         }
         return null;
     }

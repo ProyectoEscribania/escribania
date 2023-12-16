@@ -3,15 +3,10 @@ package domainapp.modules.simple.dom.solicitud.equipos;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jdo.annotations.NotPersistent;
-
-import domainapp.modules.simple.dom.jugador.Jugador;
-import domainapp.modules.simple.dom.solicitud.simple.Solicitud;
-import domainapp.modules.simple.dom.solicitud.simple.SolicitudServices;
 
 import org.apache.causeway.applib.annotation.Action;
 import org.apache.causeway.applib.annotation.ActionLayout;
@@ -28,11 +23,14 @@ import lombok.RequiredArgsConstructor;
 import domainapp.modules.simple.SimpleModule;
 import domainapp.modules.simple.dom.equipo.Equipo;
 import domainapp.modules.simple.dom.equipo.EquipoServices;
+import domainapp.modules.simple.dom.jugador.Jugador;
 import domainapp.modules.simple.dom.jugador.JugadorServices;
 import domainapp.modules.simple.dom.partido.PartidoServices;
 import domainapp.modules.simple.dom.partido.types.Estados;
 import domainapp.modules.simple.dom.partido.types.Horarios;
 import domainapp.modules.simple.dom.partido.types.NumeroCancha;
+import domainapp.modules.simple.dom.solicitud.simple.Solicitud;
+import domainapp.modules.simple.dom.solicitud.simple.SolicitudServices;
 
 
 @Named(SimpleModule.NAMESPACE + ".SolicitudEquipoServices")
@@ -50,7 +48,7 @@ public class SolicitudEquipoServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public boolean crearSolicitudEquipo(final String diaString, final String telefono, final String horarioSting) {
+    public String crearSolicitudEquipo(final String diaString, final String telefono, final String horarioSting) {
 
 
         Equipo equipo = equipoServices.buscarEquipo(telefono);
@@ -66,8 +64,8 @@ public class SolicitudEquipoServices {
             if (esEquipo1(solicitudEquipo)) {
                 return asignarEquipo1YSolicitarPartido(solicitudEquipo, telefono);
             } else {
-                asignarEquipo2YSolicitarPartido(solicitudEquipo, telefono, horarioSting, diaString, precio);
-                return true;
+                return asignarEquipo2YSolicitarPartido(solicitudEquipo, telefono, horarioSting, diaString, precio);
+
             }
 
         } else if (equipo == null){
@@ -75,21 +73,24 @@ public class SolicitudEquipoServices {
                 }else throw new IllegalArgumentException("Ya tienes un partido");
     }
 
-    private boolean asignarEquipo1YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono) {
+    private String asignarEquipo1YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono) {
         Equipo equipo1 = equipoServices.buscarEquipo(telefono);
         solicitudEquipo.setEquipo1(equipo1);
         repositoryService.persist(solicitudEquipo);
-        return false;
+        return "Se creo la Solicitud";
     }
 
-    private void asignarEquipo2YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono, String horarioSting, String diaString, Double precio) {
+    private String asignarEquipo2YSolicitarPartido(SolicitudEquipo solicitudEquipo, String telefono, String horarioSting, String diaString, Double precio) {
         Equipo equipo2 = equipoServices.buscarEquipo(telefono);
         if (esMismoEquipo(solicitudEquipo, equipo2)) {
             throw new IllegalArgumentException("El equipo no puede ser el mismo que el Equipo 1 en la solicitud actual");
         } else {
             solicitudEquipo.setEquipo2(equipo2);
             partidoServices.crearPartidoEquipos(horarioSting, diaString, solicitudEquipo.getEquipo1(),solicitudEquipo.getEquipo2(), precio);
+            String mail1 = solicitudEquipo.getEquipo1().getRepresentante().getMail();
+            String mail2 = solicitudEquipo.getEquipo2().getRepresentante().getMail();
             repositoryService.removeAndFlush(solicitudEquipo);
+            return "{ mail1: "+mail1+", mail2: "+mail2+"}";
         }
     }
 

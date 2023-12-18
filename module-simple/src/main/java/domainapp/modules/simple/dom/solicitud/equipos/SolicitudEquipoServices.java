@@ -90,7 +90,7 @@ public class SolicitudEquipoServices {
             String mail1 = solicitudEquipo.getEquipo1().getRepresentante().getMail();
             String mail2 = solicitudEquipo.getEquipo2().getRepresentante().getMail();
             repositoryService.removeAndFlush(solicitudEquipo);
-            return "{ mail1: "+mail1+", mail2: "+mail2+"}";
+           return "{ \"email1\": \"" + mail1 + "\", \"email2\": \"" + mail2 + "\"}";
         }
     }
 

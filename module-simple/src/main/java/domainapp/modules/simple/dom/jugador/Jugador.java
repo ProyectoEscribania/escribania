@@ -34,6 +34,8 @@ import lombok.ToString;
 import lombok.val;
 
 import domainapp.modules.simple.SimpleModule;
+import domainapp.modules.simple.dom.equipo.Equipo;
+import domainapp.modules.simple.dom.equipo.EquipoServices;
 
 
 @PersistenceCapable(
@@ -59,6 +61,9 @@ public class Jugador{
     static final String NAMED_QUERY__FIND_BY_TEL = "Jugador.findByTel";
     @Inject @NotPersistent RepositoryService repositoryService;
     @Inject @NotPersistent TitleService titleService;
+    @Inject @NotPersistent EquipoServices equipoServices;
+
+
 
     public static Jugador crearJugador(final String nombre, final String apellido, final String telefono, final String mail, final String password, final LocalDate fechaDeNacimiento) {
         val jugador = new Jugador();
@@ -110,7 +115,11 @@ public class Jugador{
             position = ActionLayout.Position.PANEL)
     public void eliminarJugador() {
         final String title = titleService.titleOf(this);
+        Equipo equipo = equipoServices.buscarEquipo(this.getTelefono());
+        repositoryService.removeAndFlush(equipo);
         repositoryService.removeAndFlush(this);
+
+
     }
 
 

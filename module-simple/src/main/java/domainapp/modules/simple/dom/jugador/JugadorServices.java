@@ -21,7 +21,6 @@ import org.apache.causeway.applib.services.repository.RepositoryService;
 import lombok.RequiredArgsConstructor;
 
 import domainapp.modules.simple.SimpleModule;
-import domainapp.modules.simple.dom.equipo.EquipoServices;
 
 @Named(SimpleModule.NAMESPACE + ".JugadorServices")
 @DomainService(nature = NatureOfService.VIEW)
@@ -35,10 +34,15 @@ public class JugadorServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Jugador crearJugador(
+    public boolean crearJugador(
             final String nombre, final String apellido, final String telefono, final String mail, final String password, final String fechaDeNacimientoString) {
-            LocalDate fechaDeNacimiento = LocalDate.parse(fechaDeNacimientoString);
-        return repositoryService.persist(Jugador.crearJugador(nombre,apellido,telefono,mail,password,fechaDeNacimiento));
+            Jugador jugador = buscarJugador(telefono);
+            if (jugador == null) {
+                LocalDate fechaDeNacimiento = LocalDate.parse(fechaDeNacimientoString);
+                repositoryService.persist(Jugador.crearJugador(nombre,apellido,telefono,mail,password,fechaDeNacimiento));
+                return true;
+            }
+            return false;
     }
 
     @Action(semantics = SemanticsOf.SAFE)

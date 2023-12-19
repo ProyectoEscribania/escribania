@@ -79,7 +79,7 @@ public class Jugador{
 
 
 
-    @Title
+
     @Getter @Setter @ToString.Include
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.IDENTITY, sequence = "1")
     private String nombre;
@@ -88,6 +88,7 @@ public class Jugador{
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "2")
     private String apellido;
 
+    @Title
     @Getter @Setter
     @PropertyLayout(fieldSetId = LayoutConstants.FieldSetId.DETAILS, sequence = "3")
     private String telefono;

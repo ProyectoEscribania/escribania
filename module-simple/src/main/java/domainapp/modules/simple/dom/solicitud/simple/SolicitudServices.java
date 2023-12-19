@@ -44,7 +44,7 @@ public class SolicitudServices {
 
     @Action(semantics = SemanticsOf.NON_IDEMPOTENT)
     @ActionLayout(promptStyle = PromptStyle.DIALOG_SIDEBAR)
-    public Solicitud crearSolicitud(final String diaString, final String telefono, final String horarioSting) {
+    public boolean crearSolicitud(final String diaString, final String telefono, final String horarioSting) {
 
 
         LocalDate dia = LocalDate.parse(diaString);
@@ -63,9 +63,10 @@ public class SolicitudServices {
             Partido p1=partidoServices.crearPartido(horarioSting, diaString, solicitud.getJugadores().get(0).getTelefono(), precio);
             p1.setEstados(Estados.MATCHMAKING);
             repositoryService.removeAndFlush(solicitud);
-            return null;
+            return true;
         } else {
-            return repositoryService.persist(solicitud);
+            repositoryService.persist(solicitud);
+            return false;
         }
     }
 

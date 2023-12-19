@@ -1,7 +1,6 @@
 package domainapp.modules.simple.dom.partido;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -203,10 +202,9 @@ public class Partido{
             fieldSetId = LayoutConstants.FieldSetId.IDENTITY,
             position = ActionLayout.Position.PANEL,
             describedAs = "Deletes this object from the persistent datastore")
-    public List<Partido> darDeBaja() {
+    public void darDeBaja() {
         final String title = titleService.titleOf(this);
         repositoryService.removeAndFlush(this);
-        return repositoryService.allInstances(Partido.class);
     }
 
 }

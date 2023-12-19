@@ -2,7 +2,6 @@ package domainapp.modules.simple.dom.jugador;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -109,10 +108,9 @@ public class Jugador{
     @ActionLayout(
             fieldSetId = LayoutConstants.FieldSetId.IDENTITY,
             position = ActionLayout.Position.PANEL)
-    public List<Jugador> eliminarJugador() {
+    public void eliminarJugador() {
         final String title = titleService.titleOf(this);
         repositoryService.removeAndFlush(this);
-        return repositoryService.allInstances(Jugador.class);
     }
 
 

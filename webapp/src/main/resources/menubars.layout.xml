@@ -32,6 +32,17 @@
                 <mb3:serviceAction objectType="simple.EncargadoServices" id="verEncargados"/>
             </mb3:section>
         </mb3:menu>
+
+        <mb3:menu>
+            <mb3:named>Reportes</mb3:named>
+            <mb3:section>
+                <mb3:serviceAction objectType="simple.ReporteJugador" id="generarReporteJugadorPDF"/>
+                <mb3:serviceAction objectType="simple.ReporteJugador" id="generarReportePartidosPDF"/>
+                <mb3:serviceAction objectType="simple.ReporteJugador" id="generarReportePartidosPorEstadoPDF"/>
+                <mb3:serviceAction objectType="simple.ReporteJugador" id="generarReportePartidosPorJugadorPDF"/>
+            </mb3:section>
+        </mb3:menu>
+
         <mb3:menu unreferencedActions="true">
             <mb3:named>Other</mb3:named>
         </mb3:menu>
